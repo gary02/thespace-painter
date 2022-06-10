@@ -44,10 +44,16 @@ const main = async (path: string | undefined) => {
     process.env.PRIVATE_KEY
   );
 
+
+  // colors gen from png
+  // here is a expamle: 2*2 black image:
+  const colors = [0x000000, 0x000000, 0x000000, 0x000000];
+
   const tokenId = 1;
   const bidPrice = ethers.BigNumber.from('1000000000000000000');
   const newPrice = ethers.BigNumber.from('1000000000000000000');
-  const color = 2;
+  const color = 1;
+
   const tx = await thespace.setPixel(tokenId, bidPrice, newPrice, color)
   await tx.wait();
 

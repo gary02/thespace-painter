@@ -1,18 +1,18 @@
 import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
+
+import { paint } from "./painter";
 import { abi } from "../abi/TheSpace.json";
 
-const RGBS = [
-  0x000000, 0xffffff, 0xd4d7d9, 0x898d90, 0x784102, 0xd26500, 0xff8a00,
-  0xffde2f, 0x159800, 0x8de763, 0x58eaf4, 0x059df2, 0x034cba, 0x9503c9,
-  0xd90041, 0xff9fab,
-];
 
 const readPNG = (path: string) => {
   const data: Buffer = fs.readFileSync(path);
   return PNG.sync.read(data);
 }
+
+const getColors = (png: PNG) => {
+} 
 
 const initTheSpaceContract = (address: string, rpcUrl: string, privateKey: string) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
@@ -48,16 +48,9 @@ const main = async (path: string | undefined) => {
   // colors gen from png
   // here is a expamle: 2*2 black image:
   const colors = [0x000000, 0x000000, 0x000000, 0x000000];
-
-  const tokenId = 1;
-  const bidPrice = ethers.BigNumber.from('1000000000000000000');
-  const newPrice = ethers.BigNumber.from('1000000000000000000');
-  const color = 1;
-
-  const tx = await thespace.setPixel(tokenId, bidPrice, newPrice, color)
-  await tx.wait();
-
-
+  const height = png.height;
+  const width = png.width;
+  await paint({colors, height, width}, thespace);
 }
 
 

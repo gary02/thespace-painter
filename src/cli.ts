@@ -27,6 +27,8 @@ const main = async (path: string | undefined) => {
     process.env.PRIVATE_KEY
   );
 
+  const painting = fetchPainting(path);
+  //console.log(painting.colors);
   await paint(fetchPainting(path), thespace);
 }
 

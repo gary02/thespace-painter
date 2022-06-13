@@ -60,9 +60,3 @@ const readPNG = (path: string) => {
 }
 
 const grayscale = (r: number, g: number, b: number): number => (r*299 + g*587 + b*114);
-
-//const p = fetchPainting(process.argv[2])
-//const steps = blackFirst(p);
-//console.log(p.height)
-//console.log(p.width)
-//console.log(steps.length)

@@ -52,14 +52,14 @@ const main = async (path: string | undefined) => {
   );
 
   const balance = await currency.balanceOf(signer.address);
-  if ( balance.eq(0) ) {
+  if ( balance.isZero() ) {
     console.error('error: this wallet address has no space tokens')
     return;
   }
 
   const allowance = await currency.allowance(signer.address, registryAddr);
 
-  if ( allowance.eq(0) ) {
+  if ( allowance.isZero() ) {
     const tx = await currency.approve(registryAddr, balance);
     await tx.wait();
   }

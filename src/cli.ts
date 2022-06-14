@@ -2,46 +2,30 @@ import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
+import { CLI_USAGE, CLI_COMMANDS, BASE_OUT_DIR } from "./constants";
 import { fetchPainting, convert16color, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
 import { abi as erc20ABI } from "../abi/ERC20.json";
 
-const USAGE = `Usage:
-  npx ts-node src/cli.ts <command> <image-to-paint path>
-
-  Supported commands:
-    - paint
-    - preview
-    - preprocess
-
-  Environment values below should be set when using paint command:
-    - THESPACE_ADDRESS
-    - PRIVATE_KEY
-    - PROVIDER_RPC_HTTP_URL
-`
-
-const COMMANDS = ['preview', 'paint', 'preprocess']
-const BASE_OUT_DIR = 'out/'
-
 const cli = () => {
   const count = process.argv.length;
   if (count <= 3) {
-    console.info(USAGE);
+    console.info(CLI_USAGE);
     return;
   };
 
   const command = process.argv[2];
-  if (COMMANDS.indexOf(command) === -1) {
-    console.info(USAGE);
+  if (CLI_COMMANDS.indexOf(command) === -1) {
+    console.info(CLI_USAGE);
     return;
   }
 
   const imagePath = process.argv[3];
 
   if (imagePath === undefined) {
-    console.info(USAGE);
+    console.info(CLI_USAGE);
     return;
   }
 

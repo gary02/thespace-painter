@@ -125,7 +125,7 @@ const preview = (path: string) => {
 
   }
   
-  console.info(`done, try run 'feh -S name -Z ./${outDir}/*'`)
+  console.info(`done, try run 'feh --keep-zoom-vp -Z -S name -D 0.005 ./${outDir}/'`)
 }
 
 const preprocess = (path: string) => {

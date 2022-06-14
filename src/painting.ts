@@ -33,8 +33,20 @@ export const fetchPainting = (png: PNG): Painting => {
 }
 
 export const convert16color = (png: PNG): PNG => {
+  const rgbs = COLORS.map((c) => color2rgb(c))
   for (const i of Array(png.height * png.width).keys()) {
     const idx = i * 4;
+    const r = png.data[idx];
+    const g = png.data[idx + 1];
+    const b = png.data[idx + 2];
+    const a = png.data[idx + 3];
+    if (a === 0) {
+      continue;
+    }
+    const [nr, ng, nb] = closestRGB([r, g, b], rgbs);
+    png.data[idx] = nr;
+    png.data[idx + 1] = ng;
+    png.data[idx + 2] = nb;
   }
   return png;
 }
@@ -68,6 +80,19 @@ export const randomPick = (painting: Painting): number[] => {
 }
 
 // helpers
+
+const closestRGB = (origin: RGB, candidates: RGB[]): RGB => {
+  const diffs: [RGB, number][] = [];
+  const [r, g, b] = origin;
+  for (const [cr, cg, cb] of candidates) {
+    diffs.push([
+      [cr, cg, cb],
+      ((r - cr)**2 + (g - cg)**2 + (b - cb)**2)
+    ])
+  }
+  diffs.sort((a, b) => a[1] - b[1]);
+  return diffs[0][0];
+}
 
 const color2rgb = (c: Color):RGB => [(c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff]
 

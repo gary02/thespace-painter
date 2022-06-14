@@ -137,7 +137,7 @@ const preprocess = (path: string) => {
   convert16color(png);
   const outFilePath = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '.png';
   fs.writeFileSync(outFilePath , PNG.sync.write(png))
-  console.info(`output to ' ${outFilePath}'`)
+  console.info(`output to './${outFilePath}'`)
 }
 
 // helpers

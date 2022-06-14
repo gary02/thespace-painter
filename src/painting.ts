@@ -1,5 +1,10 @@
 import { PNG, PackerOptions } from "pngjs";
+import { COLORS } from "./constants";
 
+
+type Color = number;
+
+type RGB = [number, number, number];
 
 interface Painting {
   colors: number[];
@@ -21,18 +26,21 @@ export const fetchPainting = (png: PNG): Painting => {
     const g = png.data[idx + 1];
     const b = png.data[idx + 2];
     const a = png.data[idx + 3];
-    colors.push(rgb2color(r, g, b));
+    colors.push(rgb2color([r, g, b]));
     alphas.push(a);
   }
   return {colors, alphas, height, width};
 }
 
 export const convert16color = (png: PNG): PNG => {
-  return png
+  for (const i of Array(png.height * png.width).keys()) {
+    const idx = i * 4;
+  }
+  return png;
 }
 
 export const blackFirst = (painting: Painting): number[] => {
-  const grayscales = painting.colors.map((c) => grayscale(...color2rgb(c)))
+  const grayscales = painting.colors.map((c) => grayscale(color2rgb(c)))
   const grayscaleEntries = [];
   for (const element of grayscales.entries()) {
     grayscaleEntries.push(element);
@@ -61,11 +69,11 @@ export const randomPick = (painting: Painting): number[] => {
 
 // helpers
 
-const color2rgb = (c:number):[number, number, number] => [(c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff]
+const color2rgb = (c: Color):RGB => [(c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff]
 
-const rgb2color = (r: number, g: number, b: number): number => (r << 16) + (g << 8) + b
+const rgb2color = (rgb: RGB): Color => (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]
 
-const grayscale = (r: number, g: number, b: number): number => (r*299 + g*587 + b*114);
+const grayscale = (rgb: RGB): number => (rgb[0]*299 + rgb[1]*587 + rgb[2]*114);
 
 const shuffle = (array: number[]): number[] => {
   let currentIndex = array.length,  randomIndex;

@@ -6,7 +6,6 @@ interface Painting {
   colors: number[];
 
   alphas: number[];
-  grayscales: number[];
 
   height: number;
   width: number;
@@ -18,7 +17,6 @@ export const fetchPainting = (path: string): Painting => {
   const width = png.width;
   const colors = [];
   const rgbs = [];
-  const grayscales = [];
   const alphas = [];
 
   for (const i of Array(height * width).keys()) {
@@ -27,17 +25,16 @@ export const fetchPainting = (path: string): Painting => {
     const g = png.data[idx + 1];
     const b = png.data[idx + 2];
     const a = png.data[idx + 3];
-    const rgb = (r << 16) + (g << 8) + b
-    colors.push(rgb);
+    colors.push(rgb2color(r, g, b));
     alphas.push(a);
-    grayscales.push(grayscale(r, g, b));
   }
-  return {colors, alphas, grayscales, height, width};
+  return {colors, alphas, height, width};
 }
 
 export const blackFirst = (painting: Painting): number[] => {
+  const grayscales = painting.colors.map((c) => grayscale(...color2rgb(c)))
   const grayscaleEntries = [];
-  for (const element of painting.grayscales.entries()) {
+  for (const element of grayscales.entries()) {
     grayscaleEntries.push(element);
   }
   grayscaleEntries.sort((a, b) => a[1] - b[1]);
@@ -58,5 +55,9 @@ const readPNG = (path: string) => {
   const data: Buffer = fs.readFileSync(path);
   return PNG.sync.read(data);
 }
+
+const color2rgb = (c:number):[number, number, number] => [(c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff]
+
+const rgb2color = (r: number, g: number, b: number): number => (r << 16) + (g << 8) + b
 
 const grayscale = (r: number, g: number, b: number): number => (r*299 + g*587 + b*114);

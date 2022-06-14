@@ -137,6 +137,7 @@ const dryrun = (path: string) => {
 
   const png0 = new PNG({ width: painting.width, height: painting.height })
   for (const i of steps) {
+    console.log(i)
   }
   
   console.info(`see in './${outDir}'`)

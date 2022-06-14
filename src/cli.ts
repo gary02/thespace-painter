@@ -9,43 +9,45 @@ import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
 import { abi as erc20ABI } from "../abi/ERC20.json";
 
 const USAGE = `Usage:
-  npx ts-node src/cli.ts <image-to-paint path> [--run]
+  npx ts-node src/cli.ts <command> <image-to-paint path>
 
-  Environment values below should be set when --run specified:
+  Supported commands:
+    - paint
+    - preview
+    - convert
+
+  Environment values below should be set when using paint command:
     - THESPACE_ADDRESS
     - PRIVATE_KEY
     - PROVIDER_RPC_HTTP_URL
 `
 
+const COMMANDS = ['preview', 'paint', 'convert']
+
 const cli = () => {
   const count = process.argv.length;
-  if (count <= 2) {
+  if (count <= 3) {
     console.info(USAGE);
     return;
   };
 
-  let path;
-  let run = false;
-
-  for (const i of Array(count - 2).keys()) {
-    const item = process.argv[2+i];
-    if (item.indexOf('/') !== -1) {
-      path = item;
-    };
-    if (item === '--run') {
-      run = true;
-    };
-  };
-
-  if (path === undefined) {
+  const command = process.argv[2];
+  if (COMMANDS.indexOf(command) === -1) {
     console.info(USAGE);
     return;
   }
 
-  if (run === true) {
-    main(path)
+  const imagePath = process.argv[3];
+
+  if (imagePath === undefined) {
+    console.info(USAGE);
+    return;
+  }
+
+  if (command === 'paint') {
+    main(imagePath);
   } else {
-    dryrun(path)
+    preview(imagePath);
   }
 }
 
@@ -121,7 +123,7 @@ const hashCode = (str: string) => {
     return hash;
 };
 
-const dryrun = (path: string) => {
+const preview = (path: string) => {
 
   const baseOutDir = 'out/'
   const outDir = baseOutDir + hashCode(path).toString(32).slice(1);
@@ -133,8 +135,8 @@ const dryrun = (path: string) => {
   }
 
   const painting = fetchPainting(path)
-  const steps = randomPick(painting);
-  // const steps = blackFirst(painting);
+  // const steps = randomPick(painting);
+  const steps = blackFirst(painting);
 
   const png = new PNG({ width: painting.width, height: painting.height })
   for (const [i, step] of steps.entries()) {
@@ -142,7 +144,7 @@ const dryrun = (path: string) => {
     const idx  = step * 4
     png.data[idx] = (color >> 16) & 0xff;
     png.data[idx + 1] = (color >> 8) & 0xff;
-    png.data[idx + 2] = (color >> 8) & 0xff;
+    png.data[idx + 2] = color & 0xff;
     png.data[idx + 3] = 0xff;
 
     const fileData: Buffer = PNG.sync.write(png);
@@ -150,7 +152,7 @@ const dryrun = (path: string) => {
 
   }
   
-  console.info(`see in './${outDir}'`)
+  console.info(`done, try run 'feh -S name -Z ./${outDir}/*'`)
 }
 
 cli();

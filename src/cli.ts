@@ -2,7 +2,7 @@ import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
-import { fetchPainting, blackFirst, randomPick } from "./painting";
+import { fetchPainting, convert16color, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
@@ -47,8 +47,10 @@ const cli = () => {
 
   if (command === 'paint') {
     paint(imagePath);
-  } else {
+  } else if (command === 'preview') {
     preview(imagePath);
+  } else {
+    convert(imagePath);
   }
 }
 
@@ -107,7 +109,7 @@ const paint = async (path: string) => {
     await tx.wait();
   }
 
-  const painting = fetchPainting(path);
+  const painting = fetchPainting(readPNG(path));
   //console.log(painting.colors);
   await _paint(painting, thespace);
 }
@@ -122,7 +124,7 @@ const preview = (path: string) => {
       fs.mkdirSync(outDir);
   }
 
-  const painting = fetchPainting(path)
+  const painting = fetchPainting(readPNG(path))
   // const steps = randomPick(painting);
   const steps = blackFirst(painting);
 
@@ -135,15 +137,30 @@ const preview = (path: string) => {
     png.data[idx + 2] = color & 0xff;
     png.data[idx + 3] = 0xff;
 
-    const fileData: Buffer = PNG.sync.write(png);
-    fs.writeFileSync(outDir + '/' + String(i+1).padStart(10, '0') +  '.png' , fileData)
+    fs.writeFileSync(outDir + '/' + String(i+1).padStart(10, '0') +  '.png' , PNG.sync.write(png))
 
   }
   
   console.info(`done, try run 'feh -S name -Z ./${outDir}/*'`)
 }
 
+const convert = (path: string) => {
+
+  if (!fs.existsSync(BASE_OUT_DIR)) {
+      fs.mkdirSync(BASE_OUT_DIR);
+  }
+  const png = readPNG(path);
+  convert16color(png);
+  const outFilePath = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '.png';
+  fs.writeFileSync(outFilePath , PNG.sync.write(png))
+  console.info(`output to ' ${outFilePath}'`)
+}
 // helpers
+
+const readPNG = (path: string) => {
+  const data: Buffer = fs.readFileSync(path);
+  return PNG.sync.read(data);
+}
 
 const hashCode = (str: string) => {
     var hash = 0, i, chr;

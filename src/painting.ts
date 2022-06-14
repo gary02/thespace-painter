@@ -1,4 +1,3 @@
-import fs from "fs";
 import { PNG, PackerOptions } from "pngjs";
 
 
@@ -9,8 +8,7 @@ interface Painting {
   width: number;
 }
 
-export const fetchPainting = (path: string): Painting => {
-  const png = readPNG(path);
+export const fetchPainting = (png: PNG): Painting => {
   const height = png.height;
   const width = png.width;
   const colors = [];
@@ -27,6 +25,10 @@ export const fetchPainting = (path: string): Painting => {
     alphas.push(a);
   }
   return {colors, alphas, height, width};
+}
+
+export const convert16color = (png: PNG): PNG => {
+  return png
 }
 
 export const blackFirst = (painting: Painting): number[] => {
@@ -58,11 +60,6 @@ export const randomPick = (painting: Painting): number[] => {
 }
 
 // helpers
-
-const readPNG = (path: string) => {
-  const data: Buffer = fs.readFileSync(path);
-  return PNG.sync.read(data);
-}
 
 const color2rgb = (c:number):[number, number, number] => [(c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff]
 

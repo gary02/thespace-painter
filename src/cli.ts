@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
 import { fetchPainting, blackFirst, randomPick } from "./painting";
-import { paint } from "./painter";
+import { paint as _paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
 import { abi as erc20ABI } from "../abi/ERC20.json";
@@ -45,13 +45,13 @@ const cli = () => {
   }
 
   if (command === 'paint') {
-    main(imagePath);
+    paint(imagePath);
   } else {
     preview(imagePath);
   }
 }
 
-const main = async (path: string) => {
+const paint = async (path: string) => {
 
   const thespaceAddr = process.env.THESPACE_ADDRESS;
   const privateKey = process.env.PRIVATE_KEY;
@@ -108,20 +108,8 @@ const main = async (path: string) => {
 
   const painting = fetchPainting(path);
   //console.log(painting.colors);
-  await paint(painting, thespace);
+  await _paint(painting, thespace);
 }
-
-// helpers 
-const hashCode = (str: string) => {
-    var hash = 0, i, chr;
-    if (str.length === 0) return hash;
-    for (i = 0; i < str.length; i++) {
-          chr   = str.charCodeAt(i);
-          hash  = ((hash << 5) - hash) + chr;
-          hash |= 0; // Convert to 32bit integer
-        }
-    return hash;
-};
 
 const preview = (path: string) => {
 
@@ -154,5 +142,18 @@ const preview = (path: string) => {
   
   console.info(`done, try run 'feh -S name -Z ./${outDir}/*'`)
 }
+
+// helpers
+
+const hashCode = (str: string) => {
+    var hash = 0, i, chr;
+    if (str.length === 0) return hash;
+    for (i = 0; i < str.length; i++) {
+          chr   = str.charCodeAt(i);
+          hash  = ((hash << 5) - hash) + chr;
+          hash |= 0; // Convert to 32bit integer
+        }
+    return hash;
+};
 
 cli();

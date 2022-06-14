@@ -23,6 +23,7 @@ const USAGE = `Usage:
 `
 
 const COMMANDS = ['preview', 'paint', 'convert']
+const BASE_OUT_DIR = 'out/'
 
 const cli = () => {
   const count = process.argv.length;
@@ -113,10 +114,9 @@ const paint = async (path: string) => {
 
 const preview = (path: string) => {
 
-  const baseOutDir = 'out/'
-  const outDir = baseOutDir + hashCode(path).toString(32).slice(1);
-  if (!fs.existsSync(baseOutDir)) {
-      fs.mkdirSync(baseOutDir);
+  const outDir = BASE_OUT_DIR + hashCode(path).toString(32).slice(1);
+  if (!fs.existsSync(BASE_OUT_DIR)) {
+      fs.mkdirSync(BASE_OUT_DIR);
   }
   if (!fs.existsSync(outDir)) {
       fs.mkdirSync(outDir);

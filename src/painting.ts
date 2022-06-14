@@ -4,9 +4,7 @@ import { PNG, PackerOptions } from "pngjs";
 
 interface Painting {
   colors: number[];
-
   alphas: number[];
-
   height: number;
   width: number;
 }

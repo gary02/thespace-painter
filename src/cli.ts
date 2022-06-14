@@ -14,7 +14,7 @@ const USAGE = `Usage:
   Supported commands:
     - paint
     - preview
-    - convert
+    - preprocess
 
   Environment values below should be set when using paint command:
     - THESPACE_ADDRESS
@@ -22,7 +22,7 @@ const USAGE = `Usage:
     - PROVIDER_RPC_HTTP_URL
 `
 
-const COMMANDS = ['preview', 'paint', 'convert']
+const COMMANDS = ['preview', 'paint', 'preprocess']
 const BASE_OUT_DIR = 'out/'
 
 const cli = () => {
@@ -50,7 +50,7 @@ const cli = () => {
   } else if (command === 'preview') {
     preview(imagePath);
   } else {
-    convert(imagePath);
+    preprocess(imagePath);
   }
 }
 
@@ -144,7 +144,7 @@ const preview = (path: string) => {
   console.info(`done, try run 'feh -S name -Z ./${outDir}/*'`)
 }
 
-const convert = (path: string) => {
+const preprocess = (path: string) => {
 
   if (!fs.existsSync(BASE_OUT_DIR)) {
       fs.mkdirSync(BASE_OUT_DIR);

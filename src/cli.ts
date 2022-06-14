@@ -2,7 +2,7 @@ import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
-import { CLI_USAGE, CLI_COMMANDS, BASE_OUT_DIR } from "./constants";
+import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR } from "./constants";
 import { fetchPainting, convert16color, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
@@ -10,31 +10,34 @@ import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
 import { abi as erc20ABI } from "../abi/ERC20.json";
 
 const cli = () => {
+
+  const getImagePathOrPrintHelp = (help: string): string | never => {
+    const imagePath = process.argv[3];
+    if (imagePath === undefined) {
+      console.info(help);
+      process.exit(1);
+    }
+    return imagePath;
+  }
+
   const count = process.argv.length;
-  if (count <= 3) {
+  if (count <= 2) {
     console.info(CLI_USAGE);
-    return;
+    process.exit(1);
   };
 
   const command = process.argv[2];
   if (CLI_COMMANDS.indexOf(command) === -1) {
     console.info(CLI_USAGE);
-    return;
-  }
-
-  const imagePath = process.argv[3];
-
-  if (imagePath === undefined) {
-    console.info(CLI_USAGE);
-    return;
+    process.exit(1);
   }
 
   if (command === 'paint') {
-    paint(imagePath);
+    paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT));
   } else if (command === 'preview') {
-    preview(imagePath);
+    preview(getImagePathOrPrintHelp(CLI_USAGE));
   } else {
-    preprocess(imagePath);
+    preprocess(getImagePathOrPrintHelp(CLI_USAGE));
   }
 }
 

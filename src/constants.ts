@@ -5,14 +5,18 @@ export const COLORS = [
 ];
 
 export const CLI_USAGE = `Usage:
-  npx ts-node src/cli.ts <command> <image-to-paint path>
+  npx ts-node src/cli.ts <SUBCOMMAND>
 
-  Supported commands:
-    - paint
-    - preview
-    - preprocess
+  SUBCOMMANDS:
+    - paint         Paint input image on TheSpace app.
+    - preview       Ouput a series of png files to show how robot paint the target painting step by step.
+    - preprocess    Convert image to valid 16-color png file for TheSpace app.
+`
 
-  Environment values below should be set when using paint command:
+export const CLI_USAGE_PAINT = `Usage:
+  npx ts-node src/cli.ts paint <png path>
+
+  Environment values below should be set for this subcommand:
     - THESPACE_ADDRESS
     - PRIVATE_KEY
     - PROVIDER_RPC_HTTP_URL

@@ -2,7 +2,7 @@ import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
-import { fetchPainting, blackFirst } from "./painting";
+import { fetchPainting, blackFirst, randomPick } from "./painting";
 import { paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
@@ -133,7 +133,8 @@ const dryrun = (path: string) => {
   }
 
   const painting = fetchPainting(path)
-  const steps = blackFirst(painting);
+  const steps = randomPick(painting);
+  // const steps = blackFirst(painting);
 
   const png = new PNG({ width: painting.width, height: painting.height })
   for (const [i, step] of steps.entries()) {

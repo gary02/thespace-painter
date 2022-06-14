@@ -47,6 +47,16 @@ export const blackFirst = (painting: Painting): number[] => {
   return steps;
 }
 
+export const randomPick = (painting: Painting): number[] => {
+  const steps = [];
+  for (const [idx, a] of painting.alphas.entries()) {
+    if (a > 0) {
+      steps.push(idx)
+    }
+  }
+  return shuffle(steps);
+}
+
 // helpers
 
 const readPNG = (path: string) => {
@@ -59,3 +69,21 @@ const color2rgb = (c:number):[number, number, number] => [(c >> 16) & 0xff, (c >
 const rgb2color = (r: number, g: number, b: number): number => (r << 16) + (g << 8) + b
 
 const grayscale = (r: number, g: number, b: number): number => (r*299 + g*587 + b*114);
+
+const shuffle = (array: number[]): number[] => {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}

@@ -135,9 +135,18 @@ const dryrun = (path: string) => {
   const painting = fetchPainting(path)
   const steps = blackFirst(painting);
 
-  const png0 = new PNG({ width: painting.width, height: painting.height })
-  for (const i of steps) {
-    console.log(i)
+  const png = new PNG({ width: painting.width, height: painting.height })
+  for (const [i, step] of steps.entries()) {
+    const color = painting.colors[step]
+    const idx  = step * 4
+    png.data[idx] = (color >> 16) & 0xff;
+    png.data[idx + 1] = (color >> 8) & 0xff;
+    png.data[idx + 2] = (color >> 8) & 0xff;
+    png.data[idx + 3] = 0xff;
+
+    const fileData: Buffer = PNG.sync.write(png);
+    fs.writeFileSync(outDir + '/' + String(i+1).padStart(10, '0') +  '.png' , fileData)
+
   }
   
   console.info(`see in './${outDir}'`)

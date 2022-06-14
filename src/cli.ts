@@ -155,6 +155,7 @@ const convert = (path: string) => {
   fs.writeFileSync(outFilePath , PNG.sync.write(png))
   console.info(`output to ' ${outFilePath}'`)
 }
+
 // helpers
 
 const readPNG = (path: string) => {

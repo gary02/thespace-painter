@@ -12,12 +12,34 @@ import { abi as erc20ABI } from "../abi/ERC20.json";
 const cli = () => {
 
   const getImagePathOrPrintHelp = (help: string): string | never => {
-    const imagePath = process.argv[3];
+    let imagePath;
+    for (const i of Array(process.argv.length-3).keys()) {
+      const item = process.argv[3+i];
+      if (item.startsWith('-')) {
+        continue;
+      }
+      imagePath = item;
+      break;
+    }
     if (imagePath === undefined) {
       console.info(help);
       process.exit(1);
     }
     return imagePath;
+  }
+  const getMode = (help: string): string | never => {
+    let mode;
+    for (const i of Array(process.argv.length-3).keys()) {
+      const item = process.argv[3+i];
+      if (item.startsWith('--mode=')) {
+        mode = item.split('=')[1];
+        break;
+      }
+    }
+    if (mode === undefined) {
+      mode = 'blackFirst';
+    }
+    return mode;
   }
 
   const count = process.argv.length;
@@ -35,7 +57,7 @@ const cli = () => {
   if (command === 'paint') {
     paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT));
   } else if (command === 'preview') {
-    preview(getImagePathOrPrintHelp(CLI_USAGE));
+    preview(getImagePathOrPrintHelp(CLI_USAGE), getMode(CLI_USAGE));
   } else {
     preprocess(getImagePathOrPrintHelp(CLI_USAGE));
   }
@@ -101,9 +123,18 @@ const paint = async (path: string) => {
   await _paint(painting, thespace);
 }
 
-const preview = (path: string) => {
+const preview = (path: string, mode: string) => {
 
-  const outDir = BASE_OUT_DIR + hashCode(path).toString(32).slice(1);
+
+  const painting = fetchPainting(readPNG(path))
+  let steps = [];
+  if (mode == 'randomPick') {
+    steps = randomPick(painting);
+  } else {
+    steps = blackFirst(painting);
+  };
+
+  const outDir = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '-' + mode;
   if (!fs.existsSync(BASE_OUT_DIR)) {
       fs.mkdirSync(BASE_OUT_DIR);
   }
@@ -111,14 +142,10 @@ const preview = (path: string) => {
       fs.mkdirSync(outDir);
   }
 
-  const painting = fetchPainting(readPNG(path))
-  // const steps = randomPick(painting);
-  const steps = blackFirst(painting);
-
   const png = new PNG({ width: painting.width, height: painting.height })
   for (const [i, step] of steps.entries()) {
-    const color = painting.colors[step]
-    const idx  = step * 4
+    const color = painting.colors[step];
+    const idx  = step * 4;
     png.data[idx] = (color >> 16) & 0xff;
     png.data[idx + 1] = (color >> 8) & 0xff;
     png.data[idx + 2] = color & 0xff;

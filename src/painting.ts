@@ -163,6 +163,10 @@ const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index
     upperRight = _upperRight;
   }
 
+  if (left === null) {
+    return  upper || upperRight || right || lowerRight || lower || lowerLeft || upperLeft;
+  }
+
   return right || lowerRight || lower || lowerLeft || left || upperLeft || upper || upperRight;
 }
 

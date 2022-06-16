@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
 import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR } from "./constants";
-import { fetchPainting, convert16color, blackFirst, randomPick } from "./painting";
+import { fetchPainting, convert16color, stroll, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
@@ -37,7 +37,7 @@ const cli = () => {
       }
     }
     if (mode === undefined) {
-      mode = 'blackFirst';
+      mode = 'stroll';
     }
     return mode;
   }
@@ -128,10 +128,12 @@ const preview = (path: string, mode: string) => {
 
   const painting = fetchPainting(readPNG(path))
   let steps = [];
-  if (mode == 'randomPick') {
+  if (mode === 'randomPick') {
     steps = randomPick(painting);
-  } else {
+  } else if (mode === 'blackFirst') {
     steps = blackFirst(painting);
+  } else {
+    steps = stroll(painting);
   };
 
   const outDir = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '-' + mode;

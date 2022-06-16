@@ -1,4 +1,5 @@
 import type { Event, Contract } from "ethers";
+import type { Painting } from "./painting";
 
 import { ethers } from "ethers";
 
@@ -24,12 +25,7 @@ function getRandomInt(min: number, max: number) {
 }
 
 export const paint = async (
-  painting: {
-    colors: number[];
-    alphas: number[];
-    height: number;
-    width: number;
-  },
+  painting: Painting,
   thespace: Contract
 ) => {
   // , x: number, y: number, maxPrice: number

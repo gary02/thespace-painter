@@ -9,7 +9,7 @@ type Color = number;
 
 type RGB = [number, number, number];
 
-interface Painting {
+export interface Painting {
   colors: number[];
   alphas: number[];
   height: number;

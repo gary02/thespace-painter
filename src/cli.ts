@@ -125,7 +125,6 @@ const paint = async (path: string) => {
 
 const preview = (path: string, mode: string) => {
 
-
   const painting = fetchPainting(readPNG(path))
   let steps = [];
   if (mode === 'randomPick') {

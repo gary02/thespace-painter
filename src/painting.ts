@@ -116,11 +116,6 @@ const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index
   const color = painting.colors[start];
   const good = (idx: Index | null) => (idx !== null && !hits.has(idx) && painting.colors[idx] == color && painting.alphas[idx] > 0)
 
-  const upperRight = getUpperRight(start, painting.height, painting.width);
-  if (good(upperRight)) {
-    return upperRight;
-  }
-
   const right = getRight(start, painting.height, painting.width);
   if (good(right)) {
     return right;
@@ -153,6 +148,11 @@ const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index
   const upper = getUpper(start, painting.height, painting.width);
   if (good(upper)) {
     return upper;
+  }
+
+  const upperRight = getUpperRight(start, painting.height, painting.width);
+  if (good(upperRight)) {
+    return upperRight;
   }
 
   return null;

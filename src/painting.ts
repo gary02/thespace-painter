@@ -115,47 +115,55 @@ const getStartIndex = (painting: Painting, hits: Set<Index>): Index | null => {
 const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index>): Index | null => {
   const color = painting.colors[start];
   const good = (idx: Index | null) => (idx !== null && !hits.has(idx) && painting.colors[idx] == color && painting.alphas[idx] > 0)
+  let right: number | null = null;
+  let lowerRight: number | null = null;
+  let lower: number | null = null;
+  let lowerLeft: number | null = null;
+  let left: number | null = null;
+  let upperLeft: number | null = null;
+  let upper: number | null = null;
+  let upperRight: number | null = null;
 
-  const right = getRight(start, painting.height, painting.width);
-  if (good(right)) {
-    return right;
+  const _right = getRight(start, painting.height, painting.width);
+  if (good(_right)) {
+    right = _right;
   }
 
-  const lowerRight = getLowerRight(start, painting.height, painting.width);
-  if (good(lowerRight)) {
-    return lowerRight;
+  const _lowerRight = getLowerRight(start, painting.height, painting.width);
+  if (good(_lowerRight)) {
+    lowerRight = _lowerRight;
   }
 
-  const lower = getLower(start, painting.height, painting.width);
-  if (good(lower)) {
-    return lower;
+  const _lower = getLower(start, painting.height, painting.width);
+  if (good(_lower)) {
+    lower = _lower;
   }
 
-  const lowerLeft = getLowerLeft(start, painting.height, painting.width);
-  if (good(lowerLeft)) {
-    return lowerLeft;
+  const _lowerLeft = getLowerLeft(start, painting.height, painting.width);
+  if (good(_lowerLeft)) {
+    lowerLeft = _lowerLeft;
   }
 
-  const left = getLeft(start, painting.height, painting.width);
-  if (good(left)) {
-    return left;
+  const _left = getLeft(start, painting.height, painting.width);
+  if (good(_left)) {
+    left = _left;
   }
 
-  const upperLeft = getUpperLeft(start, painting.height, painting.width);
-  if (good(upperLeft)) {
-    return upperLeft;
+  const _upperLeft = getUpperLeft(start, painting.height, painting.width);
+  if (good(_upperLeft)) {
+    upperLeft = _upperLeft;
   }
-  const upper = getUpper(start, painting.height, painting.width);
-  if (good(upper)) {
-    return upper;
-  }
-
-  const upperRight = getUpperRight(start, painting.height, painting.width);
-  if (good(upperRight)) {
-    return upperRight;
+  const _upper = getUpper(start, painting.height, painting.width);
+  if (good(_upper)) {
+    upper = _upper;
   }
 
-  return null;
+  const _upperRight = getUpperRight(start, painting.height, painting.width);
+  if (good(_upperRight)) {
+    upperRight = _upperRight;
+  }
+
+  return right || lowerRight || lower || lowerLeft || left || upperLeft || upper || upperRight;
 }
 
 const index2coordinate = (idx: Index, width: number): Coordinate => {

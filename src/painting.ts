@@ -2,6 +2,9 @@ import { PNG, PackerOptions } from "pngjs";
 import { COLORS } from "./constants";
 
 
+type Index = number;
+type Coordinate = [number, number];
+
 type Color = number;
 
 type RGB = [number, number, number];
@@ -51,6 +54,25 @@ export const convert16color = (png: PNG): PNG => {
   return png;
 }
 
+export const stroll = (painting: Painting): number[] => {
+  const steps: Index[] = [];
+  const hits: Set<Index> = new Set([-1]);
+
+  const addStep = (step: Index) => {steps.push(step);hits.add(step);}
+
+  let start = getStartIndex(painting, hits);
+  while ( start !== null ) {
+    addStep(start);
+    let idx = getNearSameColorIndex(start, painting, hits);
+    while (idx !== null) {
+      addStep(idx);
+      idx = getNearSameColorIndex(idx, painting, hits);
+    }
+    start = getStartIndex(painting, hits);
+  }
+  return steps;
+}
+
 export const blackFirst = (painting: Painting): number[] => {
   const grayscales = painting.colors.map((c) => grayscale(color2rgb(c)))
   const grayscaleEntries = [];
@@ -62,7 +84,7 @@ export const blackFirst = (painting: Painting): number[] => {
   const steps = [];
   for (const [idx, _] of grayscaleEntries) {
     if (painting.alphas[idx] > 0) {
-      steps.push(idx)
+      steps.push(idx);
     }
   }
 
@@ -80,6 +102,125 @@ export const randomPick = (painting: Painting): number[] => {
 }
 
 // helpers
+
+const getStartIndex = (painting: Painting, hits: Set<Index>): Index | null => {
+  for (const [idx, a] of painting.alphas.entries()) {
+    if (a > 0 && !hits.has(idx)) {
+      return idx;
+    }
+  }
+  return null;
+}
+
+const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index>): Index | null => {
+  const color = painting.colors[start];
+  const good = (idx: Index | null) => (idx !== null && !hits.has(idx) && painting.colors[idx] == color && painting.alphas[idx] > 0)
+
+  const upperRight = getUpperRight(start, painting.height, painting.width);
+  if (good(upperRight)) {
+    return upperRight;
+  }
+
+  const right = getRight(start, painting.height, painting.width);
+  if (good(right)) {
+    return right;
+  }
+
+  const lowerRight = getLowerRight(start, painting.height, painting.width);
+  if (good(lowerRight)) {
+    return lowerRight;
+  }
+
+  const lower = getLower(start, painting.height, painting.width);
+  if (good(lower)) {
+    return lower;
+  }
+
+  const lowerLeft = getLowerLeft(start, painting.height, painting.width);
+  if (good(lowerLeft)) {
+    return lowerLeft;
+  }
+
+  const left = getLeft(start, painting.height, painting.width);
+  if (good(left)) {
+    return left;
+  }
+
+  const upperLeft = getUpperLeft(start, painting.height, painting.width);
+  if (good(upperLeft)) {
+    return upperLeft;
+  }
+  const upper = getUpper(start, painting.height, painting.width);
+  if (good(upper)) {
+    return upper;
+  }
+
+  return null;
+}
+
+const index2coordinate = (idx: Index, width: number): Coordinate => {
+  return [idx % width, Math.floor(idx / width)];
+}
+
+const coordinate2index = (coord: Coordinate, width: number): Index => {
+  return coord[1] * width + coord[0];
+}
+
+const getRight = (idx: Index, height: number, width: number): Index | null => {
+  const [x, y] = index2coordinate(idx, width);
+  if (x === width - 1) {
+    return null;
+  } else {
+    return coordinate2index([x + 1, y], width);
+  }
+}
+
+const getLeft = (idx: Index, height: number, width: number): Index | null => {
+  const [x, y] = index2coordinate(idx, width);
+  if (x === 0) {
+    return null;
+  } else {
+    return coordinate2index([x - 1, y], width);
+  }
+}
+
+const getUpper = (idx: Index, height: number, width: number): Index | null => {
+  const [x, y] = index2coordinate(idx, width);
+  if (y === 0) {
+    return null;
+  } else {
+    return coordinate2index([x, y - 1], width);
+  }
+}
+
+const getLower = (idx: Index, height: number, width: number): Index | null => {
+  const [x, y] = index2coordinate(idx, width);
+  if (y === height - 1) {
+    return null;
+  } else {
+    return coordinate2index([x, y + 1], width);
+  }
+}
+
+const getUpperRight = (idx: Index, height: number, width: number): Index | null => {
+  const upper = getUpper(idx, height, width);
+  return upper === null ? null : getRight(upper, height, width);
+}
+
+const getUpperLeft = (idx: Index, height: number, width: number): Index | null => {
+  const upper = getUpper(idx, height, width);
+  return upper === null ? null : getLeft(upper, height, width);
+}
+
+const getLowerRight = (idx: Index, height: number, width: number): Index | null => {
+  const lower = getLower(idx, height, width);
+  return lower === null ? null : getRight(lower, height, width);
+}
+
+const getLowerLeft = (idx: Index, height: number, width: number): Index | null => {
+  const lower = getLower(idx, height, width);
+  return lower === null ? null : getLeft(lower, height, width);
+}
 
 const closestRGB = (origin: RGB, candidates: RGB[]): RGB => {
   const diffs: [RGB, number][] = [];

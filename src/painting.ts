@@ -1,9 +1,9 @@
+import type { Index, Coordinate } from "./utils";
+
 import { PNG, PackerOptions } from "pngjs";
+
 import { COLORS } from "./constants";
-
-
-type Index = number;
-type Coordinate = [number, number];
+import { index2coordinate, coordinate2index } from "./utils";
 
 type Color = number;
 
@@ -168,14 +168,6 @@ const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index
   }
 
   return right || lowerRight || lower || lowerLeft || left || upperLeft || upper || upperRight;
-}
-
-const index2coordinate = (idx: Index, width: number): Coordinate => {
-  return [idx % width, Math.floor(idx / width)];
-}
-
-const coordinate2index = (coord: Coordinate, width: number): Index => {
-  return coord[1] * width + coord[0];
 }
 
 const getRight = (idx: Index, height: number, width: number): Index | null => {

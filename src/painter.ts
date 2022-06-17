@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import { COLORS } from "./constants";
 import { getFeeDataFromPolygon, index2coordinate } from "./utils";
 
-function color2cc(color: number) {
+const color2cc = (color: number) => {
   return COLORS.indexOf(color) + 1;
 }
 
@@ -16,7 +16,7 @@ const sleep = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getRandomInt(min: number, max: number) {
+const getRandomInt = (min: number, max: number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive

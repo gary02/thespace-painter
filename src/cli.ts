@@ -1,3 +1,5 @@
+import type { Coordinate } from "./utils";
+
 import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
@@ -42,6 +44,21 @@ const cli = () => {
     return mode;
   }
 
+  const getOffset = (help: string): string | never => {
+    let offset;
+    for (const i of Array(process.argv.length-3).keys()) {
+      const item = process.argv[3+i];
+      if (item.startsWith('--offset=')) {
+        offset = item.split('=')[1];
+        break;
+      }
+    }
+    if (offset === undefined) {
+      offset = '1,1';
+    }
+    return offset;
+  }
+
   const count = process.argv.length;
   if (count <= 2) {
     console.info(CLI_USAGE);
@@ -55,7 +72,7 @@ const cli = () => {
   }
 
   if (command === 'paint') {
-    paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT));
+    paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT), getMode(CLI_USAGE_PAINT));
   } else if (command === 'preview') {
     preview(getImagePathOrPrintHelp(CLI_USAGE), getMode(CLI_USAGE));
   } else {
@@ -63,7 +80,7 @@ const cli = () => {
   }
 }
 
-const paint = async (path: string) => {
+const paint = async (path: string, mode: string) => {
 
   const thespaceAddr = process.env.THESPACE_ADDRESS;
   const privateKey = process.env.PRIVATE_KEY;
@@ -119,8 +136,15 @@ const paint = async (path: string) => {
   }
 
   const painting = fetchPainting(readPNG(path));
-  //console.log(painting.colors);
-  await _paint(painting, thespace);
+  let steps = [];
+  if (mode === 'randomPick') {
+    steps = randomPick(painting);
+  } else if (mode === 'blackFirst') {
+    steps = blackFirst(painting);
+  } else {
+    steps = stroll(painting);
+  };
+  await _paint(painting, steps, thespace, [20, 20]);
 }
 
 const preview = (path: string, mode: string) => {

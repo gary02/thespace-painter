@@ -1,13 +1,11 @@
 import type { Event, Contract } from "ethers";
 import type { Painting } from "./painting";
+import type { Coordinate } from "./utils";
 
 import { ethers } from "ethers";
 
 import { COLORS } from "./constants";
-import { stroll } from "./painting";
 import { getFeeDataFromPolygon, index2coordinate } from "./utils";
-
-const oneSpaceToken = ethers.BigNumber.from("1000000000000000000");
 
 function color2cc(color: number) {
   return COLORS.indexOf(color) + 1;
@@ -26,21 +24,19 @@ function getRandomInt(min: number, max: number) {
 
 export const paint = async (
   painting: Painting,
-  thespace: Contract
+  steps: number[],
+  thespace: Contract,
+  offset: Coordinate
 ) => {
   // , x: number, y: number, maxPrice: number
-  const x = 484;
-  const y = 702;
+  const [x, y] = offset;
   const maxPrice = 20;
   //TODO: max gas fee
   const pixelsOfRow = 1000;
-  const steps = stroll(painting);
   for (const [i, step] of steps.entries()) {
     const color = painting.colors[step];
     const [pixelX, pixelY] = index2coordinate(step, painting.width);
     const tokenId = (y + pixelY - 1) * pixelsOfRow + (x + pixelX);
-    const bidPrice = oneSpaceToken;
-    const newPrice = oneSpaceToken;
     const cc = color2cc(color);
     console.log('\n----------------------------------------------')    
     const price = await thespace.getPrice(tokenId);
@@ -49,7 +45,7 @@ export const paint = async (
     const feeData = await getFeeDataFromPolygon();
     console.log({ progress: `${i+1} of ${steps.length}`, x: x + pixelX, y: y + pixelY, 'color':cc, price: p });
     if (p <= maxPrice && colored.toNumber() !== cc) {
-      const tx = await thespace.setPixel(tokenId, bidPrice, newPrice, cc);
+      const tx = await thespace.setPixel(tokenId, price, price, cc);
       console.log({ tx });
     //   const tr = await tx.wait();
     //   console.log({ tr });

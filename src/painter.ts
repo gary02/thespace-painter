@@ -30,19 +30,18 @@ export const paint = async (
   interval: number,
   maxPrice: number
 ) => {
-  // , x: number, y: number, maxPrice: number
-  const [x, y] = offset;
   //TODO: max gas fee
+  const [ox, oy] = offset;
 
   const thespaceWidth = Math.sqrt(THESPACE_TOTAL_SUPPLY);
   for (const [i, step] of steps.entries()) {
     const color = painting.colors[step];
-    const [pixelX, pixelY] = index2coordinate(step, painting.width);
+    const [x, y] = index2coordinate(step, painting.width);
 
     console.log('\n----------------------------------------------')    
-    console.log({ progress: `${i+1} of ${steps.length}`, x: x + pixelX, y: y + pixelY});
+    console.log({ progress: `${i+1} of ${steps.length}`, x: x + ox, y: y + oy});
 
-    const tokenId = (y + pixelY - 1) * thespaceWidth + (x + pixelX);
+    const tokenId = (y + oy - 1) * thespaceWidth + (x + ox);
     if (tokenId >= THESPACE_TOTAL_SUPPLY) {
       console.warn(`warn: invalid tokenId ${tokenId}, pass`);
       continue;

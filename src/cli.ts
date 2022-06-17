@@ -71,15 +71,15 @@ const cli = () => {
     const [x, y] = offset.split(',');
     return [parseInt(x), parseInt(y)];
   }
-  const getInternalOrPrintHelp = (help: string): number | never => {
+  const getIntervalOrPrintHelp = (help: string): number | never => {
     const pattern = /\d+/
-    let internal;
+    let interval;
     for (const i of Array(process.argv.length-3).keys()) {
       const item = process.argv[3+i];
-      if (item.startsWith('--internal=')) {
-        const _internal = item.split('=')[1];
-        if (pattern.test(_internal)) {
-          internal = _internal;
+      if (item.startsWith('--interval=')) {
+        const _interval = item.split('=')[1];
+        if (pattern.test(_interval)) {
+          interval = _interval;
         } else {
           console.info(help);
           process.exit(1);
@@ -87,10 +87,10 @@ const cli = () => {
         break;
       }
     }
-    if (internal === undefined) {
-      internal = '1';
+    if (interval === undefined) {
+      interval = '1';
     }
-    return parseInt(internal);
+    return parseInt(interval);
   }
 
   const count = process.argv.length;
@@ -110,7 +110,7 @@ const cli = () => {
       getImagePathOrPrintHelp(CLI_USAGE_PAINT),
       getModeOrPrintHelp(CLI_USAGE_PAINT),
       getOffsetOrPrintHelp(CLI_USAGE_PAINT),
-      getInternalOrPrintHelp(CLI_USAGE_PAINT)
+      getIntervalOrPrintHelp(CLI_USAGE_PAINT)
     );
   } else if (command === 'preview') {
     preview(
@@ -122,7 +122,7 @@ const cli = () => {
   }
 }
 
-const paint = async (path: string, mode: string, offset: Coordinate, internal: number) => {
+const paint = async (path: string, mode: string, offset: Coordinate, interval: number) => {
 
   const thespaceAddr = process.env.THESPACE_ADDRESS;
   const privateKey = process.env.PRIVATE_KEY;
@@ -197,7 +197,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, internal: n
   } else {
     steps = stroll(painting);
   };
-  await _paint(painting, steps, thespace, offset, internal, maxPrice!);
+  await _paint(painting, steps, thespace, offset, interval, maxPrice!);
 }
 
 const preview = (path: string, mode: string) => {

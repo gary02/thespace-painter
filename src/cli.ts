@@ -7,6 +7,7 @@ import { PNG, PackerOptions } from "pngjs";
 import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR, MODES, COLORS } from "./constants";
 import { fetchPainting, convert16color, stroll, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
+import { hash } from "./utils";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
 import { abi as erc20ABI } from "../abi/ERC20.json";
@@ -182,7 +183,7 @@ const preview = (path: string, mode: string) => {
     steps = stroll(painting);
   };
 
-  const outDir = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '-' + mode;
+  const outDir = BASE_OUT_DIR + hash(path) + '-' + mode;
   if (!fs.existsSync(BASE_OUT_DIR)) {
       fs.mkdirSync(BASE_OUT_DIR);
   }
@@ -213,7 +214,7 @@ const preprocess = (path: string) => {
   }
   const png = readPNG(path);
   convert16color(png);
-  const outFilePath = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '.png';
+  const outFilePath = BASE_OUT_DIR + hash(path) + '.png';
   fs.writeFileSync(outFilePath , PNG.sync.write(png))
   console.info(`output to './${outFilePath}'`)
 }
@@ -233,16 +234,5 @@ const readPNG = (path: string) => {
   const data: Buffer = fs.readFileSync(path);
   return PNG.sync.read(data);
 }
-
-const hashCode = (str: string) => {
-    var hash = 0, i, chr;
-    if (str.length === 0) return hash;
-    for (i = 0; i < str.length; i++) {
-          chr   = str.charCodeAt(i);
-          hash  = ((hash << 5) - hash) + chr;
-          hash |= 0; // Convert to 32bit integer
-        }
-    return hash;
-};
 
 cli();

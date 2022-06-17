@@ -1,10 +1,13 @@
+import type { Coordinate } from "./utils";
+
 import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
-import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR } from "./constants";
+import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR, MODES, COLORS } from "./constants";
 import { fetchPainting, convert16color, stroll, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
+import { hash } from "./utils";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
 import { abi as erc20ABI } from "../abi/ERC20.json";
@@ -27,7 +30,7 @@ const cli = () => {
     }
     return imagePath;
   }
-  const getMode = (help: string): string | never => {
+  const getModeOrPrintHelp = (help: string): string | never => {
     let mode;
     for (const i of Array(process.argv.length-3).keys()) {
       const item = process.argv[3+i];
@@ -39,7 +42,55 @@ const cli = () => {
     if (mode === undefined) {
       mode = 'stroll';
     }
+    if (MODES.indexOf(mode)===-1) {
+      console.info(help);
+      process.exit(1);
+    }
     return mode;
+  }
+
+  const getOffsetOrPrintHelp = (help: string): Coordinate | never => {
+    const pattern = /\d+,\d+/
+    let offset;
+    for (const i of Array(process.argv.length-3).keys()) {
+      const item = process.argv[3+i];
+      if (item.startsWith('--offset=')) {
+        const _offset = item.split('=')[1];
+        if (pattern.test(_offset)) {
+          offset = _offset;
+        } else {
+          console.info(help);
+          process.exit(1);
+        }
+        break;
+      }
+    }
+    if (offset === undefined) {
+      offset = '1,1';
+    }
+    const [x, y] = offset.split(',');
+    return [parseInt(x), parseInt(y)];
+  }
+  const getInternalOrPrintHelp = (help: string): number | never => {
+    const pattern = /\d+/
+    let internal;
+    for (const i of Array(process.argv.length-3).keys()) {
+      const item = process.argv[3+i];
+      if (item.startsWith('--internal=')) {
+        const _internal = item.split('=')[1];
+        if (pattern.test(_internal)) {
+          internal = _internal;
+        } else {
+          console.info(help);
+          process.exit(1);
+        }
+        break;
+      }
+    }
+    if (internal === undefined) {
+      internal = '1';
+    }
+    return parseInt(internal);
   }
 
   const count = process.argv.length;
@@ -55,30 +106,43 @@ const cli = () => {
   }
 
   if (command === 'paint') {
-    paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT));
+    paint(
+      getImagePathOrPrintHelp(CLI_USAGE_PAINT),
+      getModeOrPrintHelp(CLI_USAGE_PAINT),
+      getOffsetOrPrintHelp(CLI_USAGE_PAINT),
+      getInternalOrPrintHelp(CLI_USAGE_PAINT)
+    );
   } else if (command === 'preview') {
-    preview(getImagePathOrPrintHelp(CLI_USAGE), getMode(CLI_USAGE));
+    preview(
+      getImagePathOrPrintHelp(CLI_USAGE),
+      getModeOrPrintHelp(CLI_USAGE)
+    );
   } else {
     preprocess(getImagePathOrPrintHelp(CLI_USAGE));
   }
 }
 
-const paint = async (path: string) => {
+const paint = async (path: string, mode: string, offset: Coordinate, internal: number) => {
 
   const thespaceAddr = process.env.THESPACE_ADDRESS;
   const privateKey = process.env.PRIVATE_KEY;
   const rpcUrl = process.env.PROVIDER_RPC_HTTP_URL;
+  const _maxPrice = process.env.MAX_PRICE;
+  let maxPrice = (_maxPrice !== undefined) ? parseInt(_maxPrice) : undefined;
   if (thespaceAddr === undefined) {
     console.error('error: please set THESPACE_ADDRESS env');
-    return;
+    process.exit(1);
   };
   if (privateKey === undefined) {
     console.error('error: please set PRIVATE_KEY env');
-    return;
+    process.exit(1);
   };
   if (rpcUrl === undefined) {
     console.error('error: please set PROVIDER_RPC_HTTP_URL env');
-    return;
+    process.exit(1);
+  };
+  if (maxPrice === undefined ) {
+    maxPrice = 50
   };
 
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
@@ -108,7 +172,7 @@ const paint = async (path: string) => {
   const balance = await currency.balanceOf(signer.address);
   if ( balance.isZero() ) {
     console.error('error: this wallet address has no space tokens')
-    return;
+    process.exit(1);
   }
 
   const allowance = await currency.allowance(signer.address, registryAddr);
@@ -119,8 +183,21 @@ const paint = async (path: string) => {
   }
 
   const painting = fetchPainting(readPNG(path));
-  //console.log(painting.colors);
-  await _paint(painting, thespace);
+
+  if (hasInvalidColors(painting.colors)) {
+    console.error('error: this image contains invalid colors. You can use `preprocess` subcommand to convert it to valid image')
+    process.exit(1);
+  }
+
+  let steps = [];
+  if (mode === 'randomPick') {
+    steps = randomPick(painting);
+  } else if (mode === 'blackFirst') {
+    steps = blackFirst(painting);
+  } else {
+    steps = stroll(painting);
+  };
+  await _paint(painting, steps, thespace, offset, internal, maxPrice!);
 }
 
 const preview = (path: string, mode: string) => {
@@ -135,7 +212,7 @@ const preview = (path: string, mode: string) => {
     steps = stroll(painting);
   };
 
-  const outDir = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '-' + mode;
+  const outDir = BASE_OUT_DIR + hash(path) + '-' + mode;
   if (!fs.existsSync(BASE_OUT_DIR)) {
       fs.mkdirSync(BASE_OUT_DIR);
   }
@@ -166,27 +243,25 @@ const preprocess = (path: string) => {
   }
   const png = readPNG(path);
   convert16color(png);
-  const outFilePath = BASE_OUT_DIR + hashCode(path).toString(32).slice(1) + '.png';
+  const outFilePath = BASE_OUT_DIR + hash(path) + '.png';
   fs.writeFileSync(outFilePath , PNG.sync.write(png))
   console.info(`output to './${outFilePath}'`)
 }
 
 // helpers
 
+const hasInvalidColors = (colors: number[]):boolean => {
+  for (const c of colors) {
+    if (COLORS.indexOf(c) === -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const readPNG = (path: string) => {
   const data: Buffer = fs.readFileSync(path);
   return PNG.sync.read(data);
 }
-
-const hashCode = (str: string) => {
-    var hash = 0, i, chr;
-    if (str.length === 0) return hash;
-    for (i = 0; i < str.length; i++) {
-          chr   = str.charCodeAt(i);
-          hash  = ((hash << 5) - hash) + chr;
-          hash |= 0; // Convert to 32bit integer
-        }
-    return hash;
-};
 
 cli();

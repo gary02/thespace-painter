@@ -1,15 +1,15 @@
+import type { Index, Coordinate } from "./utils";
+
 import { PNG, PackerOptions } from "pngjs";
+
 import { COLORS } from "./constants";
-
-
-type Index = number;
-type Coordinate = [number, number];
+import { index2coordinate, coordinate2index } from "./utils";
 
 type Color = number;
 
 type RGB = [number, number, number];
 
-interface Painting {
+export interface Painting {
   colors: number[];
   alphas: number[];
   height: number;
@@ -170,14 +170,6 @@ const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index
   return right || lowerRight || lower || lowerLeft || left || upperLeft || upper || upperRight;
 }
 
-const index2coordinate = (idx: Index, width: number): Coordinate => {
-  return [idx % width, Math.floor(idx / width)];
-}
-
-const coordinate2index = (coord: Coordinate, width: number): Index => {
-  return coord[1] * width + coord[0];
-}
-
 const getRight = (idx: Index, height: number, width: number): Index | null => {
   const [x, y] = index2coordinate(idx, width);
   if (x === width - 1) {
@@ -255,18 +247,11 @@ const grayscale = (rgb: RGB): number => (rgb[0]*299 + rgb[1]*587 + rgb[2]*114);
 
 const shuffle = (array: number[]): number[] => {
   let currentIndex = array.length,  randomIndex;
-
-  // While there remain elements to shuffle.
   while (currentIndex != 0) {
-
-    // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-
-    // And swap it with the current element.
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex], array[currentIndex]];
   }
-
   return array;
 }

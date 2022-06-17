@@ -27,7 +27,7 @@ export const paint = async (
   steps: number[],
   thespace: Contract,
   offset: Coordinate,
-  internal: number,
+  interval: number,
   maxPrice: number
 ) => {
   // , x: number, y: number, maxPrice: number
@@ -61,7 +61,7 @@ export const paint = async (
       console.log({ tx });
     //   const tr = await tx.wait();
     //   console.log({ tr });
-     sleep(getRandomInt(internal * 1000 - 500, internal * 1000 + 500))
+     sleep(getRandomInt(interval * 1000 - 500, interval * 1000 + 500))
     }
   }
 };

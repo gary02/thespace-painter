@@ -57,9 +57,9 @@ export const paint = async (
 
   for (const [i, step] of steps.entries()) {
 
-    const [x, y] = index2coordinate(tokenIds[i], thespaceWidth)
+    const [x, y] = index2coordinate(tokenIds[i] - 1, thespaceWidth).map((i) => i + 1)
     console.log('\n----------------------------------------------')    
-    console.log(`painting (${x}, ${y}) [${i+1} of ${steps.length}]`);
+    console.log(`painting pixelID ${tokenIds[i]} (${x}, ${y}) [${i+1} of ${steps.length}]`);
 
     const newColorCode = color2cc(painting.colors[step]);
 
@@ -81,6 +81,7 @@ export const paint = async (
       continue;
     }
     //const feeData = await getFeeDataFromPolygon();
+    console.log('painting...')
     const tx = await thespace.setPixel(tokenIds[i], price, price, newColorCode);
     console.log({ tx });
     //const tr = await tx.wait();

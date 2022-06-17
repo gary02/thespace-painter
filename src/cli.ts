@@ -172,7 +172,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
 
   const balance = await currency.balanceOf(signer.address);
   if ( balance.isZero() ) {
-    console.error('error: this wallet address has no space tokens')
+    console.error(`error: this wallet address has no space tokens (erc20 ${currencyAddr})`)
     process.exit(1);
   }
 

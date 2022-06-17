@@ -43,11 +43,11 @@ export const paint = async (
     const p = Number(ethers.utils.formatEther(price));
 
     const colored = await thespace.getColor(tokenId);
-    //const feeData = await getFeeDataFromPolygon();
 
     console.log('\n----------------------------------------------')    
     console.log({ progress: `${i+1} of ${steps.length}`, x: x + pixelX, y: y + pixelY, 'color':cc, price: p });
     if (p <= maxPrice && colored.toNumber() !== cc) {
+      //const feeData = await getFeeDataFromPolygon();
       const tx = await thespace.setPixel(tokenId, price, price, cc);
       console.log({ tx });
     //   const tr = await tx.wait();

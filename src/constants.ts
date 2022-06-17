@@ -16,7 +16,7 @@ export const CLI_USAGE = `Usage:
 `
 
 export const CLI_USAGE_PAINT = `Usage:
-  npx ts-node src/cli.ts paint <png path> [--mode=<mode>] [--offset=<x,y>]
+  npx ts-node src/cli.ts paint <png path> [--mode=<mode>] [--offset=<x,y>] [--internal=<seconds>]
 
   Environment values below should be set for this subcommand:
     - THESPACE_ADDRESS

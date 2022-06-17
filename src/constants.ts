@@ -16,12 +16,13 @@ export const CLI_USAGE = `Usage:
 `
 
 export const CLI_USAGE_PAINT = `Usage:
-  npx ts-node src/cli.ts paint <png path>
+  npx ts-node src/cli.ts paint <png path> [--mode=<mode>] [--offset=<x,y>]
 
   Environment values below should be set for this subcommand:
     - THESPACE_ADDRESS
     - PRIVATE_KEY
     - PROVIDER_RPC_HTTP_URL
+    - MAX_PRICE
 `
 
 export const CLI_COMMANDS = ['preview', 'paint', 'preprocess']

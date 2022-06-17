@@ -4,7 +4,7 @@ import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
-import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR, MODES } from "./constants";
+import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR, MODES, COLORS } from "./constants";
 import { fetchPainting, convert16color, stroll, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
@@ -101,15 +101,15 @@ const paint = async (path: string, mode: string, offset: Coordinate) => {
   let maxPrice = (_maxPrice !== undefined) ? parseInt(_maxPrice) : undefined;
   if (thespaceAddr === undefined) {
     console.error('error: please set THESPACE_ADDRESS env');
-    return;
+    process.exit(1);
   };
   if (privateKey === undefined) {
     console.error('error: please set PRIVATE_KEY env');
-    return;
+    process.exit(1);
   };
   if (rpcUrl === undefined) {
     console.error('error: please set PROVIDER_RPC_HTTP_URL env');
-    return;
+    process.exit(1);
   };
   if (maxPrice === undefined ) {
     maxPrice = 50
@@ -142,7 +142,7 @@ const paint = async (path: string, mode: string, offset: Coordinate) => {
   const balance = await currency.balanceOf(signer.address);
   if ( balance.isZero() ) {
     console.error('error: this wallet address has no space tokens')
-    return;
+    process.exit(1);
   }
 
   const allowance = await currency.allowance(signer.address, registryAddr);
@@ -153,6 +153,12 @@ const paint = async (path: string, mode: string, offset: Coordinate) => {
   }
 
   const painting = fetchPainting(readPNG(path));
+
+  if (hasInvalidColors(painting.colors)) {
+    console.error('error: this image contains invalid colors. You can use `preprocess` subcommand to convert it to valid image')
+    process.exit(1);
+  }
+
   let steps = [];
   if (mode === 'randomPick') {
     steps = randomPick(painting);
@@ -213,6 +219,15 @@ const preprocess = (path: string) => {
 }
 
 // helpers
+
+const hasInvalidColors = (colors: number[]):boolean => {
+  for (const c of colors) {
+    if (COLORS.indexOf(c) === -1) {
+      return true;
+    }
+  }
+  return false;
+}
 
 const readPNG = (path: string) => {
   const data: Buffer = fs.readFileSync(path);

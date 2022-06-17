@@ -77,7 +77,7 @@ export const paint = async (
     const p = Number(ethers.utils.formatEther(price));
 
     if (p > maxPrice) {
-      console.log(`${tokenIds[1]}, skip`);
+      console.log(`price ${p} too much, skip`);
       continue;
     }
     //const feeData = await getFeeDataFromPolygon();

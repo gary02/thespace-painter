@@ -44,19 +44,27 @@ const cli = () => {
     return mode;
   }
 
-  const getOffset = (help: string): string | never => {
+  const getOffset = (help: string): Coordinate | never => {
+    const pattern = /\d+,\d+/
     let offset;
     for (const i of Array(process.argv.length-3).keys()) {
       const item = process.argv[3+i];
       if (item.startsWith('--offset=')) {
-        offset = item.split('=')[1];
+        const _offset = item.split('=')[1];
+        if (pattern.test(_offset)) {
+          offset = _offset;
+        } else {
+          console.info(help);
+          process.exit(1);
+        }
         break;
       }
     }
     if (offset === undefined) {
       offset = '1,1';
     }
-    return offset;
+    const [x, y] = offset.split(',');
+    return [parseInt(x), parseInt(y)];
   }
 
   const count = process.argv.length;
@@ -72,7 +80,7 @@ const cli = () => {
   }
 
   if (command === 'paint') {
-    paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT), getMode(CLI_USAGE_PAINT));
+    paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT), getMode(CLI_USAGE_PAINT), getOffset(CLI_USAGE_PAINT));
   } else if (command === 'preview') {
     preview(getImagePathOrPrintHelp(CLI_USAGE), getMode(CLI_USAGE));
   } else {
@@ -80,7 +88,7 @@ const cli = () => {
   }
 }
 
-const paint = async (path: string, mode: string) => {
+const paint = async (path: string, mode: string, offset: Coordinate) => {
 
   const thespaceAddr = process.env.THESPACE_ADDRESS;
   const privateKey = process.env.PRIVATE_KEY;
@@ -144,7 +152,7 @@ const paint = async (path: string, mode: string) => {
   } else {
     steps = stroll(painting);
   };
-  await _paint(painting, steps, thespace, [20, 20]);
+  await _paint(painting, steps, thespace, offset);
 }
 
 const preview = (path: string, mode: string) => {

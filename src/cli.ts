@@ -30,7 +30,7 @@ const cli = () => {
     }
     return imagePath;
   }
-  const getMode = (help: string): string | never => {
+  const getModeOrPrintHelp = (help: string): string | never => {
     let mode;
     for (const i of Array(process.argv.length-3).keys()) {
       const item = process.argv[3+i];
@@ -49,7 +49,7 @@ const cli = () => {
     return mode;
   }
 
-  const getOffset = (help: string): Coordinate | never => {
+  const getOffsetOrPrintHelp = (help: string): Coordinate | never => {
     const pattern = /\d+,\d+/
     let offset;
     for (const i of Array(process.argv.length-3).keys()) {
@@ -85,9 +85,16 @@ const cli = () => {
   }
 
   if (command === 'paint') {
-    paint(getImagePathOrPrintHelp(CLI_USAGE_PAINT), getMode(CLI_USAGE_PAINT), getOffset(CLI_USAGE_PAINT));
+    paint(
+      getImagePathOrPrintHelp(CLI_USAGE_PAINT),
+      getModeOrPrintHelp(CLI_USAGE_PAINT),
+      getOffsetOrPrintHelp(CLI_USAGE_PAINT)
+    );
   } else if (command === 'preview') {
-    preview(getImagePathOrPrintHelp(CLI_USAGE), getMode(CLI_USAGE));
+    preview(
+      getImagePathOrPrintHelp(CLI_USAGE),
+      getModeOrPrintHelp(CLI_USAGE)
+    );
   } else {
     preprocess(getImagePathOrPrintHelp(CLI_USAGE));
   }

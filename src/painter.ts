@@ -4,7 +4,7 @@ import type { Coordinate } from "./utils";
 
 import { ethers } from "ethers";
 
-import { COLORS } from "./constants";
+import { COLORS, THESPACE_TOTAL_SUPPLY } from "./constants";
 import { getFeeDataFromPolygon, index2coordinate } from "./utils";
 
 const color2cc = (color: number) => {
@@ -33,11 +33,21 @@ export const paint = async (
   // , x: number, y: number, maxPrice: number
   const [x, y] = offset;
   //TODO: max gas fee
-  const pixelsOfRow = 1000;
+
+  const thespaceWidth = Math.sqrt(THESPACE_TOTAL_SUPPLY);
   for (const [i, step] of steps.entries()) {
     const color = painting.colors[step];
     const [pixelX, pixelY] = index2coordinate(step, painting.width);
-    const tokenId = (y + pixelY - 1) * pixelsOfRow + (x + pixelX);
+
+    console.log('\n----------------------------------------------')    
+    console.log({ progress: `${i+1} of ${steps.length}`, x: x + pixelX, y: y + pixelY});
+
+    const tokenId = (y + pixelY - 1) * thespaceWidth + (x + pixelX);
+    if (tokenId >= THESPACE_TOTAL_SUPPLY) {
+      console.warn(`warn: invalid tokenId ${tokenId}, pass`);
+      continue;
+    }
+
     const cc = color2cc(color);
 
     const price = await thespace.getPrice(tokenId);
@@ -45,8 +55,6 @@ export const paint = async (
 
     const colored = await thespace.getColor(tokenId);
 
-    console.log('\n----------------------------------------------')    
-    console.log({ progress: `${i+1} of ${steps.length}`, x: x + pixelX, y: y + pixelY, 'color':cc, price: p });
     if (p <= maxPrice && colored.toNumber() !== cc) {
       //const feeData = await getFeeDataFromPolygon();
       const tx = await thespace.setPixel(tokenId, price, price, cc);

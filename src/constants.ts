@@ -4,6 +4,8 @@ export const COLORS = [
   0xd90041, 0xff9fab,
 ];
 
+export const MODES = ['blackFirst', 'randomPick', 'stroll']
+
 export const CLI_USAGE = `Usage:
   npx ts-node src/cli.ts <SUBCOMMAND>
 

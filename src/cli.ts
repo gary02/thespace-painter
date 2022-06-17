@@ -4,7 +4,7 @@ import fs from "fs";
 import { ethers } from "ethers";
 import { PNG, PackerOptions } from "pngjs";
 
-import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR } from "./constants";
+import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR, MODES } from "./constants";
 import { fetchPainting, convert16color, stroll, blackFirst, randomPick } from "./painting";
 import { paint as _paint } from "./painter";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
@@ -40,6 +40,10 @@ const cli = () => {
     }
     if (mode === undefined) {
       mode = 'stroll';
+    }
+    if (MODES.indexOf(mode)===-1) {
+      console.info(help);
+      process.exit(1);
     }
     return mode;
   }

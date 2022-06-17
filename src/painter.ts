@@ -39,7 +39,7 @@ export const paint = async (
     const [x, y] = index2coordinate(step, painting.width);
 
     console.log('\n----------------------------------------------')    
-    console.log({ progress: `${i+1} of ${steps.length}`, x: x + ox, y: y + oy});
+    console.log({ progress: `${i+1} of ${steps.length}`, pos: [x + ox, y + oy]});
 
     const tokenId = (y + oy - 1) * thespaceWidth + (x + ox);
     if (tokenId >= THESPACE_TOTAL_SUPPLY) {

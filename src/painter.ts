@@ -26,11 +26,11 @@ export const paint = async (
   painting: Painting,
   steps: number[],
   thespace: Contract,
-  offset: Coordinate
+  offset: Coordinate,
+  maxPrice: number
 ) => {
   // , x: number, y: number, maxPrice: number
   const [x, y] = offset;
-  const maxPrice = 20;
   //TODO: max gas fee
   const pixelsOfRow = 1000;
   for (const [i, step] of steps.entries()) {

@@ -93,6 +93,8 @@ const paint = async (path: string, mode: string, offset: Coordinate) => {
   const thespaceAddr = process.env.THESPACE_ADDRESS;
   const privateKey = process.env.PRIVATE_KEY;
   const rpcUrl = process.env.PROVIDER_RPC_HTTP_URL;
+  const _maxPrice = process.env.MAX_PRICE;
+  let maxPrice = (_maxPrice !== undefined) ? parseInt(_maxPrice) : undefined;
   if (thespaceAddr === undefined) {
     console.error('error: please set THESPACE_ADDRESS env');
     return;
@@ -104,6 +106,9 @@ const paint = async (path: string, mode: string, offset: Coordinate) => {
   if (rpcUrl === undefined) {
     console.error('error: please set PROVIDER_RPC_HTTP_URL env');
     return;
+  };
+  if (maxPrice === undefined ) {
+    maxPrice = 50
   };
 
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
@@ -152,7 +157,7 @@ const paint = async (path: string, mode: string, offset: Coordinate) => {
   } else {
     steps = stroll(painting);
   };
-  await _paint(painting, steps, thespace, offset);
+  await _paint(painting, steps, thespace, offset, maxPrice!);
 }
 
 const preview = (path: string, mode: string) => {

@@ -38,11 +38,14 @@ export const paint = async (
     const [pixelX, pixelY] = index2coordinate(step, painting.width);
     const tokenId = (y + pixelY - 1) * pixelsOfRow + (x + pixelX);
     const cc = color2cc(color);
-    console.log('\n----------------------------------------------')    
+
     const price = await thespace.getPrice(tokenId);
-    const colored = await thespace.getColor(tokenId);
     const p = Number(ethers.utils.formatEther(price));
-    const feeData = await getFeeDataFromPolygon();
+
+    const colored = await thespace.getColor(tokenId);
+    //const feeData = await getFeeDataFromPolygon();
+
+    console.log('\n----------------------------------------------')    
     console.log({ progress: `${i+1} of ${steps.length}`, x: x + pixelX, y: y + pixelY, 'color':cc, price: p });
     if (p <= maxPrice && colored.toNumber() !== cc) {
       const tx = await thespace.setPixel(tokenId, price, price, cc);

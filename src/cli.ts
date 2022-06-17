@@ -145,6 +145,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
     maxPrice = 50
   };
 
+  console.log('setting up...')
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
   const signer = new ethers.Wallet(privateKey, provider)
 
@@ -171,7 +172,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
 
   const balance = await currency.balanceOf(signer.address);
   if ( balance.isZero() ) {
-    console.error('error: this wallet address has no space tokens')
+    console.error(`error: this wallet address has no space tokens (erc20 ${currencyAddr})`)
     process.exit(1);
   }
 
@@ -182,6 +183,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
     await tx.wait();
   }
 
+  console.log('fetching image data...')
   const painting = fetchPainting(readPNG(path));
 
   if (hasInvalidColors(painting.colors)) {
@@ -197,6 +199,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
   } else {
     steps = stroll(painting);
   };
+
   await _paint(painting, steps, thespace, offset, interval, maxPrice!);
 }
 

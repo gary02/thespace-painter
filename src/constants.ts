@@ -1,3 +1,5 @@
+export const THESPACE_TOTAL_SUPPLY = 1000000;
+
 export const COLORS = [
   0x000000, 0xffffff, 0xd4d7d9, 0x898d90, 0x784102, 0xd26500, 0xff8a00,
   0xffde2f, 0x159800, 0x8de763, 0x58eaf4, 0x059df2, 0x034cba, 0x9503c9,
@@ -16,7 +18,7 @@ export const CLI_USAGE = `Usage:
 `
 
 export const CLI_USAGE_PAINT = `Usage:
-  npx ts-node src/cli.ts paint <png path> [--mode=<mode>] [--offset=<x,y>] [--internal=<seconds>]
+  npx ts-node src/cli.ts paint <png path> [--mode=<mode>] [--offset=<x,y>] [--interval=<seconds>]
 
   Environment values below should be set for this subcommand:
     - THESPACE_ADDRESS

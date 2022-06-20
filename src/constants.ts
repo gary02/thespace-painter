@@ -22,6 +22,7 @@ export const CLI_USAGE_PAINT = `Usage:
 
   Environment values below should be set for this subcommand:
     - THESPACE_ADDRESS
+    - SNAPPER_ADDRESS
     - PRIVATE_KEY
     - PROVIDER_RPC_HTTP_URL
     - MAX_PRICE

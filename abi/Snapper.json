@@ -1,0 +1,2717 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CannotBeReInitialized",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "last",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "latest",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidLastSnapshotBlock",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "target",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "latest",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidTargetSnapshotBlock",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "block",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "cid",
+          "type": "string"
+        }
+      ],
+      "name": "Delta",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "block",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "cid",
+          "type": "string"
+        }
+      ],
+      "name": "Snapshot",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "initBlock_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "snapshotCid_",
+          "type": "string"
+        }
+      ],
+      "name": "initRegion",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "latestSnapshotInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "block",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "cid",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct Snapper.SnapshotInfo",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "latestSnapshotInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "block",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "cid",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct Snapper.SnapshotInfo",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "regionId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lastSnapshotBlock_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "targetSnapshotBlock_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "snapshotCid_",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "deltaCid_",
+          "type": "string"
+        }
+      ],
+      "name": "takeSnapshot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x608060405234801561001057600080fd5b5061001a3361001f565b61006f565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b61095d8061007e6000396000f3fe608060405234801561001057600080fd5b506004361061007d5760003560e01c80638da5cb5b1161005b5780638da5cb5b146100bd578063c500cd70146100d8578063dd1dff24146100eb578063f2fde38b146100fe57600080fd5b806369b18e3d14610082578063715018a6146100a05780637b9e138d146100aa575b600080fd5b61008a610111565b60405161009791906106af565b60405180910390f35b6100a861021b565b005b61008a6100b8366004610716565b61025a565b6000546040516001600160a01b039091168152602001610097565b6100a86100e6366004610778565b610328565b6100a86100f9366004610805565b61046f565b6100a861010c366004610858565b61052b565b6040805180820190915260008152606060208201526000805260016020908152604080518082019091527fa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49805482527fa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb4a8054929391929184019161019490610888565b80601f01602080910402602001604051908101604052809291908181526020018280546101c090610888565b801561020d5780601f106101e25761010080835404028352916020019161020d565b820191906000526020600020905b8154815290600101906020018083116101f057829003601f168201915b505050505081525050905090565b6000546001600160a01b0316331461024e5760405162461bcd60e51b8152600401610245906108c3565b60405180910390fd5b61025860006105c6565b565b60408051808201909152600081526060602082015260008281526001602081815260409283902083518085019094528054845291820180549184019161029f90610888565b80601f01602080910402602001604051908101604052809291908181526020018280546102cb90610888565b80156103185780601f106102ed57610100808354040283529160200191610318565b820191906000526020600020905b8154815290600101906020018083116102fb57829003601f168201915b5050505050815250509050919050565b6000546001600160a01b031633146103525760405162461bcd60e51b8152600401610245906108c3565b600087815260016020526040902054868114158061036e575086155b1561039d576040516307718a6560e41b8152600481018990526024810188905260448101829052606401610245565b8086116103ce576040516381e5987560e01b8152600481018990526024810187905260448101829052606401610245565b60008881526001602081905260409091208781556103ee91018686610616565b5085887ff5b21854abb8e264b9fedaa3ad65446e0f22ec55a28f8724a7d1059c69bf808d87876040516104229291906108f8565b60405180910390a385887f6e85193c2c4e64266f8891650392a957214f1ebc72a7ffe64cc1c2715d5ce23b858560405161045d9291906108f8565b60405180910390a35050505050505050565b6000546001600160a01b031633146104995760405162461bcd60e51b8152600401610245906108c3565b600084815260016020526040902054156104c9576040516391edb58560e01b815260048101859052602401610245565b60008481526001602081905260409091208481556104e991018383610616565b5082847ff5b21854abb8e264b9fedaa3ad65446e0f22ec55a28f8724a7d1059c69bf808d848460405161051d9291906108f8565b60405180910390a350505050565b6000546001600160a01b031633146105555760405162461bcd60e51b8152600401610245906108c3565b6001600160a01b0381166105ba5760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152608401610245565b6105c3816105c6565b50565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b82805461062290610888565b90600052602060002090601f016020900481019282610644576000855561068a565b82601f1061065d5782800160ff1982351617855561068a565b8280016001018555821561068a579182015b8281111561068a57823582559160200191906001019061066f565b5061069692915061069a565b5090565b5b80821115610696576000815560010161069b565b6000602080835283518184015280840151604080850152805180606086015260005b818110156106ed578281018401518682016080015283016106d1565b818111156106ff576000608083880101525b50601f01601f191693909301608001949350505050565b60006020828403121561072857600080fd5b5035919050565b60008083601f84011261074157600080fd5b50813567ffffffffffffffff81111561075957600080fd5b60208301915083602082850101111561077157600080fd5b9250929050565b600080600080600080600060a0888a03121561079357600080fd5b873596506020880135955060408801359450606088013567ffffffffffffffff808211156107c057600080fd5b6107cc8b838c0161072f565b909650945060808a01359150808211156107e557600080fd5b506107f28a828b0161072f565b989b979a50959850939692959293505050565b6000806000806060858703121561081b57600080fd5b8435935060208501359250604085013567ffffffffffffffff81111561084057600080fd5b61084c8782880161072f565b95989497509550505050565b60006020828403121561086a57600080fd5b81356001600160a01b038116811461088157600080fd5b9392505050565b600181811c9082168061089c57607f821691505b602082108114156108bd57634e487b7160e01b600052602260045260246000fd5b50919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604082015260600190565b60208152816020820152818360408301376000818301604090810191909152601f909201601f1916010191905056fea26469706673582212205d53fd16a766c5b714648f103dcad12cce447d5f9d5d2a7d477a288cd091ee8864736f6c634300080b0033",
+    "sourceMap": "415:4695:23:-:0;;;2589:16;;;;;;;;;-1:-1:-1;921:32:7;719:10:18;921:18:7;:32::i;:::-;415:4695:23;;2270:187:7;2343:16;2362:6;;-1:-1:-1;;;;;2378:17:7;;;-1:-1:-1;;;;;;2378:17:7;;;;;;2410:40;;2362:6;;;;;;;2410:40;;2343:16;2410:40;2333:124;2270:187;:::o;415:4695:23:-;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x608060405234801561001057600080fd5b506004361061007d5760003560e01c80638da5cb5b1161005b5780638da5cb5b146100bd578063c500cd70146100d8578063dd1dff24146100eb578063f2fde38b146100fe57600080fd5b806369b18e3d14610082578063715018a6146100a05780637b9e138d146100aa575b600080fd5b61008a610111565b60405161009791906106af565b60405180910390f35b6100a861021b565b005b61008a6100b8366004610716565b61025a565b6000546040516001600160a01b039091168152602001610097565b6100a86100e6366004610778565b610328565b6100a86100f9366004610805565b61046f565b6100a861010c366004610858565b61052b565b6040805180820190915260008152606060208201526000805260016020908152604080518082019091527fa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb49805482527fa6eef7e35abe7026729641147f7915573c7e97b47efa546f5f6e3230263bcb4a8054929391929184019161019490610888565b80601f01602080910402602001604051908101604052809291908181526020018280546101c090610888565b801561020d5780601f106101e25761010080835404028352916020019161020d565b820191906000526020600020905b8154815290600101906020018083116101f057829003601f168201915b505050505081525050905090565b6000546001600160a01b0316331461024e5760405162461bcd60e51b8152600401610245906108c3565b60405180910390fd5b61025860006105c6565b565b60408051808201909152600081526060602082015260008281526001602081815260409283902083518085019094528054845291820180549184019161029f90610888565b80601f01602080910402602001604051908101604052809291908181526020018280546102cb90610888565b80156103185780601f106102ed57610100808354040283529160200191610318565b820191906000526020600020905b8154815290600101906020018083116102fb57829003601f168201915b5050505050815250509050919050565b6000546001600160a01b031633146103525760405162461bcd60e51b8152600401610245906108c3565b600087815260016020526040902054868114158061036e575086155b1561039d576040516307718a6560e41b8152600481018990526024810188905260448101829052606401610245565b8086116103ce576040516381e5987560e01b8152600481018990526024810187905260448101829052606401610245565b60008881526001602081905260409091208781556103ee91018686610616565b5085887ff5b21854abb8e264b9fedaa3ad65446e0f22ec55a28f8724a7d1059c69bf808d87876040516104229291906108f8565b60405180910390a385887f6e85193c2c4e64266f8891650392a957214f1ebc72a7ffe64cc1c2715d5ce23b858560405161045d9291906108f8565b60405180910390a35050505050505050565b6000546001600160a01b031633146104995760405162461bcd60e51b8152600401610245906108c3565b600084815260016020526040902054156104c9576040516391edb58560e01b815260048101859052602401610245565b60008481526001602081905260409091208481556104e991018383610616565b5082847ff5b21854abb8e264b9fedaa3ad65446e0f22ec55a28f8724a7d1059c69bf808d848460405161051d9291906108f8565b60405180910390a350505050565b6000546001600160a01b031633146105555760405162461bcd60e51b8152600401610245906108c3565b6001600160a01b0381166105ba5760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152608401610245565b6105c3816105c6565b50565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b82805461062290610888565b90600052602060002090601f016020900481019282610644576000855561068a565b82601f1061065d5782800160ff1982351617855561068a565b8280016001018555821561068a579182015b8281111561068a57823582559160200191906001019061066f565b5061069692915061069a565b5090565b5b80821115610696576000815560010161069b565b6000602080835283518184015280840151604080850152805180606086015260005b818110156106ed578281018401518682016080015283016106d1565b818111156106ff576000608083880101525b50601f01601f191693909301608001949350505050565b60006020828403121561072857600080fd5b5035919050565b60008083601f84011261074157600080fd5b50813567ffffffffffffffff81111561075957600080fd5b60208301915083602082850101111561077157600080fd5b9250929050565b600080600080600080600060a0888a03121561079357600080fd5b873596506020880135955060408801359450606088013567ffffffffffffffff808211156107c057600080fd5b6107cc8b838c0161072f565b909650945060808a01359150808211156107e557600080fd5b506107f28a828b0161072f565b989b979a50959850939692959293505050565b6000806000806060858703121561081b57600080fd5b8435935060208501359250604085013567ffffffffffffffff81111561084057600080fd5b61084c8782880161072f565b95989497509550505050565b60006020828403121561086a57600080fd5b81356001600160a01b038116811461088157600080fd5b9392505050565b600181811c9082168061089c57607f821691505b602082108114156108bd57634e487b7160e01b600052602260045260246000fd5b50919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604082015260600190565b60208152816020820152818360408301376000818301604090810191909152601f909201601f1916010191905056fea26469706673582212205d53fd16a766c5b714648f103dcad12cce447d5f9d5d2a7d477a288cd091ee8864736f6c634300080b0033",
+    "sourceMap": "415:4695:23:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4723:117;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;1668:101:7;;;:::i;:::-;;4968:140:23;;;;;;:::i;:::-;;:::i;1036:85:7:-;1082:7;1108:6;1036:85;;-1:-1:-1;;;;;1108:6:7;;;1148:51:34;;1136:2;1121:18;1036:85:7;1002:203:34;3756:894:23;;;;;;:::i;:::-;;:::i;2986:406::-;;;;;;:::i;:::-;;:::i;1918:198:7:-;;;;;;:::i;:::-;;:::i;4723:117:23:-;-1:-1:-1;;;;;;;;;;;;;;;;;4814:19:23;;;:16;:19;;;;;4807:26;;;;;;;;4814:19;4807:26;;;;;;;;;4814:19;;4807:26;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4723:117;:::o;1668:101:7:-;1082:7;1108:6;-1:-1:-1;;;;;1108:6:7;719:10:18;1248:23:7;1240:68;;;;-1:-1:-1;;;1240:68:7;;;;;;;:::i;:::-;;;;;;;;;1732:30:::1;1759:1;1732:18;:30::i;:::-;1668:101::o:0;4968:140:23:-;-1:-1:-1;;;;;;;;;;;;;;;;;5075:26:23;;;;:16;:26;;;;;;;;;5068:33;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4968:140;;;:::o;3756:894::-;1082:7:7;1108:6;-1:-1:-1;;;;;1108:6:7;719:10:18;1248:23:7;1240:68;;;;-1:-1:-1;;;1240:68:7;;;;;;;:::i;:::-;3986:28:23::1;4017:26:::0;;;:16:::1;:26;::::0;;;;:32;4063:42;;::::1;;::::0;:69:::1;;-1:-1:-1::0;4109:23:23;;4063:69:::1;4059:170;;;4153:76;::::0;-1:-1:-1;;;4153:76:23;;::::1;::::0;::::1;4286:25:34::0;;;4327:18;;;4320:34;;;4370:18;;;4363:34;;;4259:18;;4153:76:23::1;4084:319:34::0;4059:170:23::1;4268:20;4244;:44;4240:149;;4309:80;::::0;-1:-1:-1;;;4309:80:23;;::::1;::::0;::::1;4286:25:34::0;;;4327:18;;;4320:34;;;4370:18;;;4363:34;;;4259:18;;4309:80:23::1;4084:319:34::0;4240:149:23::1;4400:26;::::0;;;:16:::1;:26;::::0;;;;;;;:55;;;4465:45:::1;::::0;:30:::1;4498:12:::0;;4465:45:::1;:::i;:::-;;4545:20;4535:8;4526:54;4567:12;;4526:54;;;;;;;:::i;:::-;;;;;;;;4611:20;4601:8;4595:48;4633:9;;4595:48;;;;;;;:::i;:::-;;;;;;;;3976:674;3756:894:::0;;;;;;;:::o;2986:406::-;1082:7:7;1108:6;-1:-1:-1;;;;;1108:6:7;719:10:18;1248:23:7;1240:68;;;;-1:-1:-1;;;1240:68:7;;;;;;;:::i;:::-;3137:26:23::1;::::0;;;:16:::1;:26;::::0;;;;:32;:37;3133:81:::1;;3183:31;::::0;-1:-1:-1;;;3183:31:23;;::::1;::::0;::::1;4949:25:34::0;;;4922:18;;3183:31:23::1;4803:177:34::0;3133:81:23::1;3225:26;::::0;;;:16:::1;:26;::::0;;;;;;;:45;;;3280::::1;::::0;:30:::1;3313:12:::0;;3280:45:::1;:::i;:::-;;3360:10;3350:8;3341:44;3372:12;;3341:44;;;;;;;:::i;:::-;;;;;;;;2986:406:::0;;;;:::o;1918:198:7:-;1082:7;1108:6;-1:-1:-1;;;;;1108:6:7;719:10:18;1248:23:7;1240:68;;;;-1:-1:-1;;;1240:68:7;;;;;;;:::i;:::-;-1:-1:-1;;;;;2006:22:7;::::1;1998:73;;;::::0;-1:-1:-1;;;1998:73:7;;5187:2:34;1998:73:7::1;::::0;::::1;5169:21:34::0;5226:2;5206:18;;;5199:30;5265:34;5245:18;;;5238:62;-1:-1:-1;;;5316:18:34;;;5309:36;5362:19;;1998:73:7::1;4985:402:34::0;1998:73:7::1;2081:28;2100:8;2081:18;:28::i;:::-;1918:198:::0;:::o;2270:187::-;2343:16;2362:6;;-1:-1:-1;;;;;2378:17:7;;;-1:-1:-1;;;;;;2378:17:7;;;;;;2410:40;;2362:6;;;;;;;2410:40;;2343:16;2410:40;2333:124;2270:187;:::o;-1:-1:-1:-;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;14:798:34;168:4;197:2;226;215:9;208:21;271:6;265:13;260:2;249:9;245:18;238:41;326:2;318:6;314:15;308:22;368:4;361;350:9;346:20;339:34;402:12;396:19;451:6;446:2;435:9;431:18;424:34;476:1;486:147;500:6;497:1;494:13;486:147;;;596:20;;;592:29;;586:36;561:17;;;580:3;557:27;550:73;515:10;;486:147;;;651:6;648:1;645:13;642:92;;;722:1;716:3;707:6;696:9;692:22;688:32;681:43;642:92;-1:-1:-1;795:2:34;774:15;-1:-1:-1;;770:29:34;755:45;;;;802:3;751:55;;14:798;-1:-1:-1;;;;14:798:34:o;817:180::-;876:6;929:2;917:9;908:7;904:23;900:32;897:52;;;945:1;942;935:12;897:52;-1:-1:-1;968:23:34;;817:180;-1:-1:-1;817:180:34:o;1210:348::-;1262:8;1272:6;1326:3;1319:4;1311:6;1307:17;1303:27;1293:55;;1344:1;1341;1334:12;1293:55;-1:-1:-1;1367:20:34;;1410:18;1399:30;;1396:50;;;1442:1;1439;1432:12;1396:50;1479:4;1471:6;1467:17;1455:29;;1531:3;1524:4;1515:6;1507;1503:19;1499:30;1496:39;1493:59;;;1548:1;1545;1538:12;1493:59;1210:348;;;;;:::o;1563:927::-;1682:6;1690;1698;1706;1714;1722;1730;1783:3;1771:9;1762:7;1758:23;1754:33;1751:53;;;1800:1;1797;1790:12;1751:53;1836:9;1823:23;1813:33;;1893:2;1882:9;1878:18;1865:32;1855:42;;1944:2;1933:9;1929:18;1916:32;1906:42;;1999:2;1988:9;1984:18;1971:32;2022:18;2063:2;2055:6;2052:14;2049:34;;;2079:1;2076;2069:12;2049:34;2118:59;2169:7;2160:6;2149:9;2145:22;2118:59;:::i;:::-;2196:8;;-1:-1:-1;2092:85:34;-1:-1:-1;2284:3:34;2269:19;;2256:33;;-1:-1:-1;2301:16:34;;;2298:36;;;2330:1;2327;2320:12;2298:36;;2369:61;2422:7;2411:8;2400:9;2396:24;2369:61;:::i;:::-;1563:927;;;;-1:-1:-1;1563:927:34;;-1:-1:-1;1563:927:34;;;;2343:87;;-1:-1:-1;;;1563:927:34:o;2495:547::-;2584:6;2592;2600;2608;2661:2;2649:9;2640:7;2636:23;2632:32;2629:52;;;2677:1;2674;2667:12;2629:52;2713:9;2700:23;2690:33;;2770:2;2759:9;2755:18;2742:32;2732:42;;2825:2;2814:9;2810:18;2797:32;2852:18;2844:6;2841:30;2838:50;;;2884:1;2881;2874:12;2838:50;2923:59;2974:7;2965:6;2954:9;2950:22;2923:59;:::i;:::-;2495:547;;;;-1:-1:-1;3001:8:34;-1:-1:-1;;;;2495:547:34:o;3047:286::-;3106:6;3159:2;3147:9;3138:7;3134:23;3130:32;3127:52;;;3175:1;3172;3165:12;3127:52;3201:23;;-1:-1:-1;;;;;3253:31:34;;3243:42;;3233:70;;3299:1;3296;3289:12;3233:70;3322:5;3047:286;-1:-1:-1;;;3047:286:34:o;3338:380::-;3417:1;3413:12;;;;3460;;;3481:61;;3535:4;3527:6;3523:17;3513:27;;3481:61;3588:2;3580:6;3577:14;3557:18;3554:38;3551:161;;;3634:10;3629:3;3625:20;3622:1;3615:31;3669:4;3666:1;3659:15;3697:4;3694:1;3687:15;3551:161;;3338:380;;;:::o;3723:356::-;3925:2;3907:21;;;3944:18;;;3937:30;4003:34;3998:2;3983:18;;3976:62;4070:2;4055:18;;3723:356::o;4408:390::-;4567:2;4556:9;4549:21;4606:6;4601:2;4590:9;4586:18;4579:34;4663:6;4655;4650:2;4639:9;4635:18;4622:48;4719:1;4690:22;;;4714:2;4686:31;;;4679:42;;;;4782:2;4761:15;;;-1:-1:-1;;4757:29:34;4742:45;4738:54;;4408:390;-1:-1:-1;4408:390:34:o",
+    "linkReferences": {}
+  },
+  "ast": {
+    "absolutePath": "/mnt/windows/Users/谷臻/code/contracts/src/Snapper/Snapper.sol",
+    "exportedSymbols": {
+      "Context": [23051],
+      "Ownable": [20680],
+      "Snapper": [23553]
+    },
+    "id": 23554,
+    "license": "Apache-2.0",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 23347,
+        "literals": ["solidity", "^", "0.8", ".11"],
+        "nodeType": "PragmaDirective",
+        "src": "39:24:23"
+      },
+      {
+        "absolutePath": "/mnt/windows/Users/谷臻/code/contracts/lib/openzeppelin-contracts/contracts/access/Ownable.sol",
+        "file": "@openzeppelin/contracts/access/Ownable.sol",
+        "id": 23348,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 23554,
+        "sourceUnit": 20681,
+        "src": "65:52:23",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 23350,
+              "name": "Ownable",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 20680,
+              "src": "435:7:23"
+            },
+            "id": 23351,
+            "nodeType": "InheritanceSpecifier",
+            "src": "435:7:23"
+          }
+        ],
+        "canonicalName": "Snapper",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 23349,
+          "nodeType": "StructuredDocumentation",
+          "src": "119:295:23",
+          "text": " @title The `Snapper` contract.\n @notice The data storage part of the whole `Snapper` app.\n @dev Logics like generating snapshot image / delta file and calling `takeSnapshot` are handled by the Lambda part.\n @dev `latestSnapshotInfo` is the only method clients should care about."
+        },
+        "fullyImplemented": true,
+        "id": 23553,
+        "linearizedBaseContracts": [23553, 20680, 23051],
+        "name": "Snapper",
+        "nameLocation": "424:7:23",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 23352,
+              "nodeType": "StructuredDocumentation",
+              "src": "449:126:23",
+              "text": " @notice Initialize intialized regions.\n @param regionId The id of region which have its own snapshot."
+            },
+            "id": 23356,
+            "name": "CannotBeReInitialized",
+            "nameLocation": "586:21:23",
+            "nodeType": "ErrorDefinition",
+            "parameters": {
+              "id": 23355,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23354,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "616:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23356,
+                  "src": "608:16:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23353,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "608:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "607:18:23"
+            },
+            "src": "580:46:23"
+          },
+          {
+            "documentation": {
+              "id": 23357,
+              "nodeType": "StructuredDocumentation",
+              "src": "632:319:23",
+              "text": " @notice `lastSnapshotBlock_` value is invaild.\n @dev `lastSnapshotBlock_` must be equal to the region latest snapshot block.\n @param regionId The region snapshotted on.\n @param last The wrong `lastSnapshotBlock_` value.\n @param latest The value `lastSnapshotBlock_` should be."
+            },
+            "id": 23365,
+            "name": "InvalidLastSnapshotBlock",
+            "nameLocation": "962:24:23",
+            "nodeType": "ErrorDefinition",
+            "parameters": {
+              "id": 23364,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23359,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "995:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23365,
+                  "src": "987:16:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23358,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "987:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23361,
+                  "mutability": "mutable",
+                  "name": "last",
+                  "nameLocation": "1013:4:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23365,
+                  "src": "1005:12:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23360,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1005:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23363,
+                  "mutability": "mutable",
+                  "name": "latest",
+                  "nameLocation": "1027:6:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23365,
+                  "src": "1019:14:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23362,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1019:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "986:48:23"
+            },
+            "src": "956:79:23"
+          },
+          {
+            "documentation": {
+              "id": 23366,
+              "nodeType": "StructuredDocumentation",
+              "src": "1041:339:23",
+              "text": " @notice `targetSnapshotBlock_` value is invaild.\n @dev `targetSnapshotBlock_` must be greater than region latest snapshot block.\n @param regionId The region snapshotted on.\n @param target The wrong `targetSnapshotBlock_` value.\n @param latest The value `targetSnapshotBlock_` should greater than."
+            },
+            "id": 23374,
+            "name": "InvalidTargetSnapshotBlock",
+            "nameLocation": "1391:26:23",
+            "nodeType": "ErrorDefinition",
+            "parameters": {
+              "id": 23373,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23368,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "1426:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23374,
+                  "src": "1418:16:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23367,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1418:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23370,
+                  "mutability": "mutable",
+                  "name": "target",
+                  "nameLocation": "1444:6:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23374,
+                  "src": "1436:14:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23369,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1436:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23372,
+                  "mutability": "mutable",
+                  "name": "latest",
+                  "nameLocation": "1460:6:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23374,
+                  "src": "1452:14:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23371,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1452:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1417:50:23"
+            },
+            "src": "1385:83:23"
+          },
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 23375,
+              "nodeType": "StructuredDocumentation",
+              "src": "1474:320:23",
+              "text": " @notice New snapshot is taken.\n @dev For more information see https://gist.github.com/zxygentoo/6575a49ff89831cdd71598d49527278b\n @param regionId The map region snapshotted on.\n @param block The block number snapshotted for The Space.\n @param cid IPFS CID of the snapshot file."
+            },
+            "id": 23383,
+            "name": "Snapshot",
+            "nameLocation": "1805:8:23",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 23382,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23377,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "1830:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23383,
+                  "src": "1814:24:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23376,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1814:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23379,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "block",
+                  "nameLocation": "1856:5:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23383,
+                  "src": "1840:21:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23378,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1840:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23381,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "cid",
+                  "nameLocation": "1870:3:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23383,
+                  "src": "1863:10:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 23380,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1863:6:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1813:61:23"
+            },
+            "src": "1799:76:23"
+          },
+          {
+            "anonymous": false,
+            "documentation": {
+              "id": 23384,
+              "nodeType": "StructuredDocumentation",
+              "src": "1881:312:23",
+              "text": " @notice New delta is generated.\n @dev For more information see https://gist.github.com/zxygentoo/6575a49ff89831cdd71598d49527278b\n @param regionId The region snapshotted on.\n @param block Delta end at this block number, inclusive\n @param cid IPFS CID of the delta file."
+            },
+            "id": 23392,
+            "name": "Delta",
+            "nameLocation": "2204:5:23",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 23391,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23386,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "2226:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23392,
+                  "src": "2210:24:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23385,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2210:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23388,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "block",
+                  "nameLocation": "2252:5:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23392,
+                  "src": "2236:21:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23387,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2236:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23390,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "cid",
+                  "nameLocation": "2266:3:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23392,
+                  "src": "2259:10:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 23389,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2259:6:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2209:61:23"
+            },
+            "src": "2198:73:23"
+          },
+          {
+            "canonicalName": "Snapper.SnapshotInfo",
+            "id": 23397,
+            "members": [
+              {
+                "constant": false,
+                "id": 23394,
+                "mutability": "mutable",
+                "name": "block",
+                "nameLocation": "2361:5:23",
+                "nodeType": "VariableDeclaration",
+                "scope": 23397,
+                "src": "2353:13:23",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 23393,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2353:7:23",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 23396,
+                "mutability": "mutable",
+                "name": "cid",
+                "nameLocation": "2383:3:23",
+                "nodeType": "VariableDeclaration",
+                "scope": 23397,
+                "src": "2376:10:23",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 23395,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2376:6:23",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "SnapshotInfo",
+            "nameLocation": "2330:12:23",
+            "nodeType": "StructDefinition",
+            "scope": 23553,
+            "src": "2323:70:23",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "documentation": {
+              "id": 23398,
+              "nodeType": "StructuredDocumentation",
+              "src": "2399:65:23",
+              "text": " @dev Store each regions' latest snapshot info."
+            },
+            "id": 23403,
+            "mutability": "mutable",
+            "name": "_latestSnapshots",
+            "nameLocation": "2510:16:23",
+            "nodeType": "VariableDeclaration",
+            "scope": 23553,
+            "src": "2469:57:23",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+              "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo)"
+            },
+            "typeName": {
+              "id": 23402,
+              "keyType": {
+                "id": 23399,
+                "name": "uint256",
+                "nodeType": "ElementaryTypeName",
+                "src": "2477:7:23",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "2469:32:23",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo)"
+              },
+              "valueType": {
+                "id": 23401,
+                "nodeType": "UserDefinedTypeName",
+                "pathNode": {
+                  "id": 23400,
+                  "name": "SnapshotInfo",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 23397,
+                  "src": "2488:12:23"
+                },
+                "referencedDeclaration": 23397,
+                "src": "2488:12:23",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage_ptr",
+                  "typeString": "struct Snapper.SnapshotInfo"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "body": {
+              "id": 23407,
+              "nodeType": "Block",
+              "src": "2603:2:23",
+              "statements": []
+            },
+            "documentation": {
+              "id": 23404,
+              "nodeType": "StructuredDocumentation",
+              "src": "2533:51:23",
+              "text": " @notice Create Snapper contract."
+            },
+            "id": 23408,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 23405,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2600:2:23"
+            },
+            "returnParameters": {
+              "id": 23406,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2603:0:23"
+            },
+            "scope": 23553,
+            "src": "2589:16:23",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 23451,
+              "nodeType": "Block",
+              "src": "3123:269:23",
+              "statements": [
+                {
+                  "condition": {
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 23425,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "expression": {
+                        "baseExpression": {
+                          "id": 23420,
+                          "name": "_latestSnapshots",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23403,
+                          "src": "3137:16:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                            "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                          }
+                        },
+                        "id": 23422,
+                        "indexExpression": {
+                          "id": 23421,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23411,
+                          "src": "3154:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "3137:26:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                          "typeString": "struct Snapper.SnapshotInfo storage ref"
+                        }
+                      },
+                      "id": 23423,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "block",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 23394,
+                      "src": "3137:32:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "!=",
+                    "rightExpression": {
+                      "hexValue": "30",
+                      "id": 23424,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "3173:1:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "src": "3137:37:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 23430,
+                  "nodeType": "IfStatement",
+                  "src": "3133:81:23",
+                  "trueBody": {
+                    "errorCall": {
+                      "arguments": [
+                        {
+                          "id": 23427,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23411,
+                          "src": "3205:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        ],
+                        "id": 23426,
+                        "name": "CannotBeReInitialized",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23356,
+                        "src": "3183:21:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_error_pure$_t_uint256_$returns$__$",
+                          "typeString": "function (uint256) pure"
+                        }
+                      },
+                      "id": 23428,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "3183:31:23",
+                      "tryCall": false,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_tuple$__$",
+                        "typeString": "tuple()"
+                      }
+                    },
+                    "id": 23429,
+                    "nodeType": "RevertStatement",
+                    "src": "3176:38:23"
+                  }
+                },
+                {
+                  "expression": {
+                    "id": 23436,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "expression": {
+                        "baseExpression": {
+                          "id": 23431,
+                          "name": "_latestSnapshots",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23403,
+                          "src": "3225:16:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                            "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                          }
+                        },
+                        "id": 23433,
+                        "indexExpression": {
+                          "id": 23432,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23411,
+                          "src": "3242:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "3225:26:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                          "typeString": "struct Snapper.SnapshotInfo storage ref"
+                        }
+                      },
+                      "id": 23434,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "block",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 23394,
+                      "src": "3225:32:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 23435,
+                      "name": "initBlock_",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23413,
+                      "src": "3260:10:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "3225:45:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 23437,
+                  "nodeType": "ExpressionStatement",
+                  "src": "3225:45:23"
+                },
+                {
+                  "expression": {
+                    "id": 23443,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "expression": {
+                        "baseExpression": {
+                          "id": 23438,
+                          "name": "_latestSnapshots",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23403,
+                          "src": "3280:16:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                            "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                          }
+                        },
+                        "id": 23440,
+                        "indexExpression": {
+                          "id": 23439,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23411,
+                          "src": "3297:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "3280:26:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                          "typeString": "struct Snapper.SnapshotInfo storage ref"
+                        }
+                      },
+                      "id": 23441,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "cid",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 23396,
+                      "src": "3280:30:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage",
+                        "typeString": "string storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 23442,
+                      "name": "snapshotCid_",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23415,
+                      "src": "3313:12:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_calldata_ptr",
+                        "typeString": "string calldata"
+                      }
+                    },
+                    "src": "3280:45:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage",
+                      "typeString": "string storage ref"
+                    }
+                  },
+                  "id": 23444,
+                  "nodeType": "ExpressionStatement",
+                  "src": "3280:45:23"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [
+                      {
+                        "id": 23446,
+                        "name": "regionId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23411,
+                        "src": "3350:8:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 23447,
+                        "name": "initBlock_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23413,
+                        "src": "3360:10:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 23448,
+                        "name": "snapshotCid_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23415,
+                        "src": "3372:12:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      ],
+                      "id": 23445,
+                      "name": "Snapshot",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23383,
+                      "src": "3341:8:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_uint256_$_t_uint256_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (uint256,uint256,string memory)"
+                      }
+                    },
+                    "id": 23449,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "3341:44:23",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 23450,
+                  "nodeType": "EmitStatement",
+                  "src": "3336:49:23"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 23409,
+              "nodeType": "StructuredDocumentation",
+              "src": "2611:370:23",
+              "text": " @notice Intialize the region before taking further snapshots.\n @dev Emits {Snapshot} event which used by Clients to draw initial picture.\n @param regionId The region to intialize.\n @param initBlock_ The Contract Creation block number of The Space contract.\n @param snapshotCid_ The initial pixels picture IPFS CID of The Space."
+            },
+            "functionSelector": "dd1dff24",
+            "id": 23452,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 23418,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 23417,
+                  "name": "onlyOwner",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 20622,
+                  "src": "3113:9:23"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "3113:9:23"
+              }
+            ],
+            "name": "initRegion",
+            "nameLocation": "2995:10:23",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 23416,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23411,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "3023:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23452,
+                  "src": "3015:16:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23410,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3015:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23413,
+                  "mutability": "mutable",
+                  "name": "initBlock_",
+                  "nameLocation": "3049:10:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23452,
+                  "src": "3041:18:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23412,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3041:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23415,
+                  "mutability": "mutable",
+                  "name": "snapshotCid_",
+                  "nameLocation": "3085:12:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23452,
+                  "src": "3069:28:23",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 23414,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3069:6:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3005:98:23"
+            },
+            "returnParameters": {
+              "id": 23419,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3123:0:23"
+            },
+            "scope": 23553,
+            "src": "2986:406:23",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 23525,
+              "nodeType": "Block",
+              "src": "3976:674:23",
+              "statements": [
+                {
+                  "assignments": [23469],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 23469,
+                      "mutability": "mutable",
+                      "name": "_latestSnapshotBlock",
+                      "nameLocation": "3994:20:23",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 23525,
+                      "src": "3986:28:23",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 23468,
+                        "name": "uint256",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "3986:7:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 23474,
+                  "initialValue": {
+                    "expression": {
+                      "baseExpression": {
+                        "id": 23470,
+                        "name": "_latestSnapshots",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23403,
+                        "src": "4017:16:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                          "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                        }
+                      },
+                      "id": 23472,
+                      "indexExpression": {
+                        "id": 23471,
+                        "name": "regionId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23455,
+                        "src": "4034:8:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "IndexAccess",
+                      "src": "4017:26:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                        "typeString": "struct Snapper.SnapshotInfo storage ref"
+                      }
+                    },
+                    "id": 23473,
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "memberName": "block",
+                    "nodeType": "MemberAccess",
+                    "referencedDeclaration": 23394,
+                    "src": "4017:32:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "3986:63:23"
+                },
+                {
+                  "condition": {
+                    "commonType": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "id": 23481,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 23477,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "id": 23475,
+                        "name": "lastSnapshotBlock_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23457,
+                        "src": "4063:18:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "!=",
+                      "rightExpression": {
+                        "id": 23476,
+                        "name": "_latestSnapshotBlock",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23469,
+                        "src": "4085:20:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "src": "4063:42:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "||",
+                    "rightExpression": {
+                      "commonType": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "id": 23480,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "id": 23478,
+                        "name": "lastSnapshotBlock_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23457,
+                        "src": "4109:18:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "==",
+                      "rightExpression": {
+                        "hexValue": "30",
+                        "id": 23479,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "number",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "4131:1:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_rational_0_by_1",
+                          "typeString": "int_const 0"
+                        },
+                        "value": "0"
+                      },
+                      "src": "4109:23:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "src": "4063:69:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 23488,
+                  "nodeType": "IfStatement",
+                  "src": "4059:170:23",
+                  "trueBody": {
+                    "errorCall": {
+                      "arguments": [
+                        {
+                          "id": 23483,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23455,
+                          "src": "4178:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        {
+                          "id": 23484,
+                          "name": "lastSnapshotBlock_",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23457,
+                          "src": "4188:18:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        {
+                          "id": 23485,
+                          "name": "_latestSnapshotBlock",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23469,
+                          "src": "4208:20:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        ],
+                        "id": 23482,
+                        "name": "InvalidLastSnapshotBlock",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23365,
+                        "src": "4153:24:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_error_pure$_t_uint256_$_t_uint256_$_t_uint256_$returns$__$",
+                          "typeString": "function (uint256,uint256,uint256) pure"
+                        }
+                      },
+                      "id": 23486,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "4153:76:23",
+                      "tryCall": false,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_tuple$__$",
+                        "typeString": "tuple()"
+                      }
+                    },
+                    "id": 23487,
+                    "nodeType": "RevertStatement",
+                    "src": "4146:83:23"
+                  }
+                },
+                {
+                  "condition": {
+                    "commonType": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    },
+                    "id": 23491,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "id": 23489,
+                      "name": "targetSnapshotBlock_",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23459,
+                      "src": "4244:20:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "<=",
+                    "rightExpression": {
+                      "id": 23490,
+                      "name": "_latestSnapshotBlock",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23469,
+                      "src": "4268:20:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "4244:44:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 23498,
+                  "nodeType": "IfStatement",
+                  "src": "4240:149:23",
+                  "trueBody": {
+                    "errorCall": {
+                      "arguments": [
+                        {
+                          "id": 23493,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23455,
+                          "src": "4336:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        {
+                          "id": 23494,
+                          "name": "targetSnapshotBlock_",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23459,
+                          "src": "4346:20:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        {
+                          "id": 23495,
+                          "name": "_latestSnapshotBlock",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23469,
+                          "src": "4368:20:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          },
+                          {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        ],
+                        "id": 23492,
+                        "name": "InvalidTargetSnapshotBlock",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23374,
+                        "src": "4309:26:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_error_pure$_t_uint256_$_t_uint256_$_t_uint256_$returns$__$",
+                          "typeString": "function (uint256,uint256,uint256) pure"
+                        }
+                      },
+                      "id": 23496,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "4309:80:23",
+                      "tryCall": false,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_tuple$__$",
+                        "typeString": "tuple()"
+                      }
+                    },
+                    "id": 23497,
+                    "nodeType": "RevertStatement",
+                    "src": "4302:87:23"
+                  }
+                },
+                {
+                  "expression": {
+                    "id": 23504,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "expression": {
+                        "baseExpression": {
+                          "id": 23499,
+                          "name": "_latestSnapshots",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23403,
+                          "src": "4400:16:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                            "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                          }
+                        },
+                        "id": 23501,
+                        "indexExpression": {
+                          "id": 23500,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23455,
+                          "src": "4417:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "4400:26:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                          "typeString": "struct Snapper.SnapshotInfo storage ref"
+                        }
+                      },
+                      "id": 23502,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "block",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 23394,
+                      "src": "4400:32:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 23503,
+                      "name": "targetSnapshotBlock_",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23459,
+                      "src": "4435:20:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "src": "4400:55:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 23505,
+                  "nodeType": "ExpressionStatement",
+                  "src": "4400:55:23"
+                },
+                {
+                  "expression": {
+                    "id": 23511,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "expression": {
+                        "baseExpression": {
+                          "id": 23506,
+                          "name": "_latestSnapshots",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23403,
+                          "src": "4465:16:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                            "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                          }
+                        },
+                        "id": 23508,
+                        "indexExpression": {
+                          "id": 23507,
+                          "name": "regionId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 23455,
+                          "src": "4482:8:23",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "4465:26:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                          "typeString": "struct Snapper.SnapshotInfo storage ref"
+                        }
+                      },
+                      "id": 23509,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "cid",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 23396,
+                      "src": "4465:30:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage",
+                        "typeString": "string storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 23510,
+                      "name": "snapshotCid_",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23461,
+                      "src": "4498:12:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_calldata_ptr",
+                        "typeString": "string calldata"
+                      }
+                    },
+                    "src": "4465:45:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage",
+                      "typeString": "string storage ref"
+                    }
+                  },
+                  "id": 23512,
+                  "nodeType": "ExpressionStatement",
+                  "src": "4465:45:23"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [
+                      {
+                        "id": 23514,
+                        "name": "regionId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23455,
+                        "src": "4535:8:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 23515,
+                        "name": "targetSnapshotBlock_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23459,
+                        "src": "4545:20:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 23516,
+                        "name": "snapshotCid_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23461,
+                        "src": "4567:12:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      ],
+                      "id": 23513,
+                      "name": "Snapshot",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23383,
+                      "src": "4526:8:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_uint256_$_t_uint256_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (uint256,uint256,string memory)"
+                      }
+                    },
+                    "id": 23517,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "4526:54:23",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 23518,
+                  "nodeType": "EmitStatement",
+                  "src": "4521:59:23"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [
+                      {
+                        "id": 23520,
+                        "name": "regionId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23455,
+                        "src": "4601:8:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 23521,
+                        "name": "targetSnapshotBlock_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23459,
+                        "src": "4611:20:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "id": 23522,
+                        "name": "deltaCid_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 23463,
+                        "src": "4633:9:23",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_string_calldata_ptr",
+                          "typeString": "string calldata"
+                        }
+                      ],
+                      "id": 23519,
+                      "name": "Delta",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23392,
+                      "src": "4595:5:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_uint256_$_t_uint256_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (uint256,uint256,string memory)"
+                      }
+                    },
+                    "id": 23523,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "4595:48:23",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 23524,
+                  "nodeType": "EmitStatement",
+                  "src": "4590:53:23"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 23453,
+              "nodeType": "StructuredDocumentation",
+              "src": "3398:353:23",
+              "text": " @notice Take a snapshot on the region.\n @dev Emits {Snapshot} and {Delta} events.\n @param regionId The region snapshotted on.\n @param lastSnapshotBlock_ Last block number snapshotted for The Space. use to validate precondition.\n @param targetSnapshotBlock_ The block number snapshotted for The Space this time."
+            },
+            "functionSelector": "c500cd70",
+            "id": 23526,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 23466,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 23465,
+                  "name": "onlyOwner",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 20622,
+                  "src": "3966:9:23"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "3966:9:23"
+              }
+            ],
+            "name": "takeSnapshot",
+            "nameLocation": "3765:12:23",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 23464,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23455,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "3795:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23526,
+                  "src": "3787:16:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23454,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3787:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23457,
+                  "mutability": "mutable",
+                  "name": "lastSnapshotBlock_",
+                  "nameLocation": "3821:18:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23526,
+                  "src": "3813:26:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23456,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3813:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23459,
+                  "mutability": "mutable",
+                  "name": "targetSnapshotBlock_",
+                  "nameLocation": "3857:20:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23526,
+                  "src": "3849:28:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23458,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3849:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23461,
+                  "mutability": "mutable",
+                  "name": "snapshotCid_",
+                  "nameLocation": "3903:12:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23526,
+                  "src": "3887:28:23",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 23460,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3887:6:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23463,
+                  "mutability": "mutable",
+                  "name": "deltaCid_",
+                  "nameLocation": "3941:9:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23526,
+                  "src": "3925:25:23",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 23462,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3925:6:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3777:179:23"
+            },
+            "returnParameters": {
+              "id": 23467,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3976:0:23"
+            },
+            "scope": 23553,
+            "src": "3756:894:23",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 23537,
+              "nodeType": "Block",
+              "src": "4797:43:23",
+              "statements": [
+                {
+                  "expression": {
+                    "baseExpression": {
+                      "id": 23533,
+                      "name": "_latestSnapshots",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23403,
+                      "src": "4814:16:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                        "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                      }
+                    },
+                    "id": 23535,
+                    "indexExpression": {
+                      "hexValue": "30",
+                      "id": 23534,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "4831:1:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_0_by_1",
+                        "typeString": "int_const 0"
+                      },
+                      "value": "0"
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "4814:19:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                      "typeString": "struct Snapper.SnapshotInfo storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 23532,
+                  "id": 23536,
+                  "nodeType": "Return",
+                  "src": "4807:26:23"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 23527,
+              "nodeType": "StructuredDocumentation",
+              "src": "4656:62:23",
+              "text": " @notice Get region 0 lastest snapshot info."
+            },
+            "functionSelector": "69b18e3d",
+            "id": 23538,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "latestSnapshotInfo",
+            "nameLocation": "4732:18:23",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 23528,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "4750:2:23"
+            },
+            "returnParameters": {
+              "id": 23532,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23531,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23538,
+                  "src": "4776:19:23",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_SnapshotInfo_$23397_memory_ptr",
+                    "typeString": "struct Snapper.SnapshotInfo"
+                  },
+                  "typeName": {
+                    "id": 23530,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 23529,
+                      "name": "SnapshotInfo",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 23397,
+                      "src": "4776:12:23"
+                    },
+                    "referencedDeclaration": 23397,
+                    "src": "4776:12:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage_ptr",
+                      "typeString": "struct Snapper.SnapshotInfo"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4775:21:23"
+            },
+            "scope": 23553,
+            "src": "4723:117:23",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 23551,
+              "nodeType": "Block",
+              "src": "5058:50:23",
+              "statements": [
+                {
+                  "expression": {
+                    "baseExpression": {
+                      "id": 23547,
+                      "name": "_latestSnapshots",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23403,
+                      "src": "5075:16:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_SnapshotInfo_$23397_storage_$",
+                        "typeString": "mapping(uint256 => struct Snapper.SnapshotInfo storage ref)"
+                      }
+                    },
+                    "id": 23549,
+                    "indexExpression": {
+                      "id": 23548,
+                      "name": "regionId",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 23541,
+                      "src": "5092:8:23",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "5075:26:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage",
+                      "typeString": "struct Snapper.SnapshotInfo storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 23546,
+                  "id": 23550,
+                  "nodeType": "Return",
+                  "src": "5068:33:23"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 23539,
+              "nodeType": "StructuredDocumentation",
+              "src": "4846:117:23",
+              "text": " @notice Get the lastest snapshot info by region.\n @param regionId ID of the region to query."
+            },
+            "functionSelector": "7b9e138d",
+            "id": 23552,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "latestSnapshotInfo",
+            "nameLocation": "4977:18:23",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 23542,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23541,
+                  "mutability": "mutable",
+                  "name": "regionId",
+                  "nameLocation": "5004:8:23",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23552,
+                  "src": "4996:16:23",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 23540,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4996:7:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4995:18:23"
+            },
+            "returnParameters": {
+              "id": 23546,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23545,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23552,
+                  "src": "5037:19:23",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_SnapshotInfo_$23397_memory_ptr",
+                    "typeString": "struct Snapper.SnapshotInfo"
+                  },
+                  "typeName": {
+                    "id": 23544,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 23543,
+                      "name": "SnapshotInfo",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 23397,
+                      "src": "5037:12:23"
+                    },
+                    "referencedDeclaration": 23397,
+                    "src": "5037:12:23",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_SnapshotInfo_$23397_storage_ptr",
+                      "typeString": "struct Snapper.SnapshotInfo"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "5036:21:23"
+            },
+            "scope": 23553,
+            "src": "4968:140:23",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 23554,
+        "src": "415:4695:23",
+        "usedErrors": [23356, 23365, 23374]
+      }
+    ],
+    "src": "39:5072:23"
+  }
+}

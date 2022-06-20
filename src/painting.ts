@@ -83,13 +83,22 @@ export const convert16color = (png: PNG): PNG => {
   return png;
 }
 
-export const stroll = (painting: Painting): number[] => {
+export const stroll = (painting: Painting, startPoint?: Coordinate): number[] => {
   const steps: Index[] = [];
   const hits: Set<Index> = new Set([-1]);
-
   const addStep = (step: Index) => {steps.push(step);hits.add(step);}
 
-  let start = getStartIndex(painting, hits);
+  let start;
+  if (startPoint !== undefined) {
+    const offset = coordinate2index(startPoint, painting.width);
+    if (offset >= painting.colors.length || offset < 0 || painting.alphas[offset] === 0) {
+      throw Error('invalid startPoint')
+    }
+    start = offset;
+  } else {
+    start = getStartIndex(painting, hits);
+  }
+
   while ( start !== null ) {
     addStep(start);
     let idx = getNearSameColorIndex(start, painting, hits);

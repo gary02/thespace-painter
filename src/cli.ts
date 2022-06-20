@@ -72,6 +72,28 @@ const cli = () => {
     const [x, y] = offset.split(',');
     return [parseInt(x), parseInt(y)];
   }
+  const getStartOrPrintHelp = (help: string): Coordinate | null | never => {
+    const pattern = /\d+,\d+/
+    let start;
+    for (const i of Array(process.argv.length-3).keys()) {
+      const item = process.argv[3+i];
+      if (item.startsWith('--start=')) {
+        const _start = item.split('=')[1];
+        if (pattern.test(_start)) {
+          start = _start;
+        } else {
+          console.info(help);
+          process.exit(1);
+        }
+        break;
+      }
+    }
+    if (start === undefined) {
+      return null;
+    }
+    const [x, y] = start.split(',');
+    return [parseInt(x), parseInt(y)];
+  }
   const getIntervalOrPrintHelp = (help: string): number | never => {
     const pattern = /\d+/
     let interval;
@@ -116,7 +138,8 @@ const cli = () => {
   } else if (command === 'preview') {
     preview(
       getImagePathOrPrintHelp(CLI_USAGE),
-      getModeOrPrintHelp(CLI_USAGE)
+      getModeOrPrintHelp(CLI_USAGE),
+      getStartOrPrintHelp(CLI_USAGE),
     );
   } else {
     preprocess(getImagePathOrPrintHelp(CLI_USAGE));
@@ -218,7 +241,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
   await _paint(painting, steps, canvas, offset, interval, maxPrice!, thespace);
 }
 
-const preview = (path: string, mode: string) => {
+const preview = (path: string, mode: string, start: Coordinate | null) => {
 
   const painting = fetchPainting(readPNG(path))
   let steps = [];
@@ -227,10 +250,19 @@ const preview = (path: string, mode: string) => {
   } else if (mode === 'blackFirst') {
     steps = blackFirst(painting);
   } else {
-    steps = stroll(painting);
+    if (start !== null) {
+      steps = stroll(painting, [start[0]-1, start[1]-1]);
+    } else {
+      steps = stroll(painting);
+    }
   };
 
-  const outDir = BASE_OUT_DIR + hash(path) + '-' + mode;
+  let filename = hash(path) + '-' + mode;
+  if (start !== null) {
+    filename = filename + `-start(${start[0]}, ${start[1]})`
+  }
+  const outDir = BASE_OUT_DIR + filename;
+
   if (!fs.existsSync(BASE_OUT_DIR)) {
       fs.mkdirSync(BASE_OUT_DIR);
   }
@@ -251,7 +283,7 @@ const preview = (path: string, mode: string) => {
 
   }
   
-  console.info(`done, try run 'feh --keep-zoom-vp -Z -S name -D 0.005 ./${outDir}/'`)
+  console.info(`done, try run "feh --keep-zoom-vp -Z -S name -D 0.005 './${outDir}/'"`)
 }
 
 const preprocess = (path: string) => {

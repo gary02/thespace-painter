@@ -4,12 +4,9 @@ import type { Coordinate, Index } from "./utils";
 
 import { ethers } from "ethers";
 
-import { COLORS, THESPACE_TOTAL_SUPPLY } from "./constants";
+import { color2code as color2cc } from "./painting";
+import { THESPACE_TOTAL_SUPPLY } from "./constants";
 import { getFeeDataFromPolygon, index2coordinate } from "./utils";
-
-const color2cc = (color: number) => {
-  return COLORS.indexOf(color) + 1;
-}
 
 const sleep = async (ms: number) => {
     console.log(`sleep ${ms} ms...`);

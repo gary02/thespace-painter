@@ -106,7 +106,11 @@ export const stroll = (painting: Painting, startPoint?: Coordinate): number[] =>
       addStep(idx);
       idx = getNearSameColorIndex(idx, painting, hits);
     }
-    start = getStartIndex(painting, hits);
+    if (startPoint !== undefined) {
+      start = getNextStartIndex(steps[steps.length-1], painting, hits) || getStartIndex(painting, hits);
+    } else {
+      start = getStartIndex(painting, hits);
+    }
   }
   return steps;
 }
@@ -144,6 +148,15 @@ export const randomPick = (painting: Painting): number[] => {
 const getStartIndex = (painting: Painting, hits: Set<Index>): Index | null => {
   for (const [idx, a] of painting.alphas.entries()) {
     if (a > 0 && !hits.has(idx)) {
+      return idx;
+    }
+  }
+  return null;
+}
+
+const getNextStartIndex = (last:Index, painting: Painting, hits: Set<Index>): Index | null => {
+  for (const [idx, a] of painting.alphas.entries()) {
+    if (a > 0 && idx > last && !hits.has(idx)) {
       return idx;
     }
   }

@@ -19,10 +19,10 @@ export const CLI_USAGE_PAINT = `Usage:
   npx ts-node src/cli.ts paint <PNG PATH> [OPTIONS]
 
 OPTIONS:
-  --offset=<x,y>      TheSpace canvas coordinate (1-base) to start paint the image, default 1,1
-  --mode=<mode name>  The way to paint the image, valid mode: stroll (default), randomPick, blackFirst
-  --start=<x,y>       When in stroll mode, specify a pixel coordinate (1-base) as start point
-  --interval=<seconds> the interval between paint, default 1 second
+            --offset=<x,y>                  TheSpace canvas coordinate (1-base) to start paint the image, default 1,1
+            --mode=<mode name>              The way to paint the image, valid mode: stroll (default), randomPick, blackFirst
+  -p=<x,y>, --stroll-label-point=<x,y>      When in stroll mode, specify a series of pixel coordinates (1-base) to help paint process
+            --interval=<seconds>            the interval between paint, default 1 second
 
 ENVIRONMENT VALUES:
   THESPACE_ADDRESS

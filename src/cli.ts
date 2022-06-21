@@ -72,27 +72,22 @@ const cli = () => {
     const [x, y] = offset.split(',');
     return [parseInt(x), parseInt(y)];
   }
-  const getStartOrPrintHelp = (help: string): Coordinate | null | never => {
+  const getLabelPointsOrPrintHelp = (help: string): Coordinate[] | never => {
     const pattern = /\d+,\d+/
-    let start;
+    const points = [];
     for (const i of Array(process.argv.length-3).keys()) {
       const item = process.argv[3+i];
-      if (item.startsWith('--start=')) {
-        const _start = item.split('=')[1];
-        if (pattern.test(_start)) {
-          start = _start;
+      if (item.startsWith('--stroll-label-point=') || item.startsWith('-p=')) {
+        const point = item.split('=')[1];
+        if (pattern.test(point)) {
+          points.push(point);
         } else {
           console.info(help);
           process.exit(1);
         }
-        break;
       }
     }
-    if (start === undefined) {
-      return null;
-    }
-    const [x, y] = start.split(',');
-    return [parseInt(x), parseInt(y)];
+    return points.map((p) => p.split(',')).map((i) => [parseInt(i[0]), parseInt(i[1])]);
   }
   const getIntervalOrPrintHelp = (help: string): number | never => {
     const pattern = /\d+/
@@ -133,20 +128,21 @@ const cli = () => {
       getImagePathOrPrintHelp(CLI_USAGE_PAINT),
       getModeOrPrintHelp(CLI_USAGE_PAINT),
       getOffsetOrPrintHelp(CLI_USAGE_PAINT),
-      getIntervalOrPrintHelp(CLI_USAGE_PAINT)
+      getIntervalOrPrintHelp(CLI_USAGE_PAINT),
+      getLabelPointsOrPrintHelp(CLI_USAGE_PAINT)
     );
   } else if (command === 'preview') {
     preview(
       getImagePathOrPrintHelp(CLI_USAGE),
       getModeOrPrintHelp(CLI_USAGE),
-      getStartOrPrintHelp(CLI_USAGE),
+      getLabelPointsOrPrintHelp(CLI_USAGE),
     );
   } else {
     preprocess(getImagePathOrPrintHelp(CLI_USAGE));
   }
 }
 
-const paint = async (path: string, mode: string, offset: Coordinate, interval: number) => {
+const paint = async (path: string, mode: string, offset: Coordinate, interval: number, labelPoints: Coordinate[]) => {
 
   const thespaceAddr = process.env.THESPACE_ADDRESS;
   const snapperAddr = process.env.SNAPPER_ADDRESS;
@@ -235,13 +231,17 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
   } else if (mode === 'blackFirst') {
     steps = blackFirst(painting);
   } else {
-    steps = stroll(painting);
+    if (labelPoints.length > 0) {
+      steps = stroll(painting, labelPoints.map((i) => [i[0]-1, i[1]-1]));
+    } else {
+      steps = stroll(painting);
+    }
   };
 
   await _paint(painting, steps, canvas, offset, interval, maxPrice!, thespace);
 }
 
-const preview = (path: string, mode: string, start: Coordinate | null) => {
+const preview = (path: string, mode: string, labelPoints: Coordinate[]) => {
 
   const painting = fetchPainting(readPNG(path))
   let steps = [];
@@ -250,16 +250,16 @@ const preview = (path: string, mode: string, start: Coordinate | null) => {
   } else if (mode === 'blackFirst') {
     steps = blackFirst(painting);
   } else {
-    if (start !== null) {
-      steps = stroll(painting, [start[0]-1, start[1]-1]);
+    if (labelPoints.length > 0) {
+      steps = stroll(painting, labelPoints.map((i) => [i[0]-1, i[1]-1]));
     } else {
       steps = stroll(painting);
     }
   };
 
   let filename = hash(path) + '-' + mode;
-  if (start !== null) {
-    filename = filename + `-start(${start[0]}, ${start[1]})`
+  if (labelPoints.length > 0) {
+    filename = filename + `-label(${labelPoints})`
   }
   const outDir = BASE_OUT_DIR + filename;
 

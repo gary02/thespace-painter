@@ -83,18 +83,21 @@ export const convert16color = (png: PNG): PNG => {
   return png;
 }
 
-export const stroll = (painting: Painting, startPoint?: Coordinate): number[] => {
+export const stroll = (painting: Painting, labelPoints?: Coordinate[]): number[] => {
   const steps: Index[] = [];
   const hits: Set<Index> = new Set([-1]);
   const addStep = (step: Index) => {steps.push(step);hits.add(step);}
-
+  let labelIndexes;
   let start;
-  if (startPoint !== undefined) {
-    const offset = coordinate2index(startPoint, painting.width);
-    if (offset >= painting.colors.length || offset < 0 || painting.alphas[offset] === 0) {
-      throw Error('invalid startPoint')
+
+  if (labelPoints !== undefined) {
+    labelIndexes = labelPoints.map((p) => coordinate2index(p, painting.width));
+    for (const [i, o] of labelIndexes.entries()) {
+      if (o >= painting.colors.length || o < 0 || painting.alphas[o] === 0) {
+        throw Error(`invalid labelPoint ${labelPoints[i]}`)
+      }
     }
-    start = offset;
+    start = getStartIndexLabeled(labelIndexes, hits);
   } else {
     start = getStartIndex(painting, hits);
   }
@@ -106,8 +109,8 @@ export const stroll = (painting: Painting, startPoint?: Coordinate): number[] =>
       addStep(idx);
       idx = getNearSameColorIndex(idx, painting, hits);
     }
-    if (startPoint !== undefined) {
-      start = getNextStartIndex(steps[steps.length-1], painting, hits) || getStartIndex(painting, hits);
+    if (labelIndexes !== undefined) {
+      start = getStartIndexLabeled(labelIndexes, hits) || getNextStartIndex(steps[steps.length-1], painting, hits) || getStartIndex(painting, hits);
     } else {
       start = getStartIndex(painting, hits);
     }
@@ -144,6 +147,15 @@ export const randomPick = (painting: Painting): number[] => {
 }
 
 // helpers
+
+const getStartIndexLabeled = (labels: Index[], hits: Set<Index>): Index | null => {
+  for (const i of labels) {
+    if (!hits.has(i)) {
+      return i;
+    }
+  }
+  return null;
+}
 
 const getStartIndex = (painting: Painting, hits: Set<Index>): Index | null => {
   for (const [idx, a] of painting.alphas.entries()) {

@@ -283,7 +283,7 @@ const preview = (path: string, mode: string, labelPoints: Coordinate[]) => {
 
   }
   
-  console.info(`done, try run "feh --keep-zoom-vp -Z -S name -D 0.005 './${outDir}/'" to preview painting process if feh app installed`)
+  console.info(`done, try run "feh --keep-zoom-vp --force-aliasing -Z -S name -D 0.005 './${outDir}/'" to preview painting process if feh app installed`)
 }
 
 const preprocess = (path: string) => {

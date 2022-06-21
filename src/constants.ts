@@ -9,21 +9,27 @@ export const MODES = ['blackFirst', 'randomPick', 'stroll']
 export const CLI_USAGE = `Usage:
   npx ts-node src/cli.ts <SUBCOMMAND>
 
-  SUBCOMMANDS:
-    - paint         Paint input image on TheSpace app.
-    - preview       Ouput a series of png files to show how robot paint the target painting step by step.
-    - preprocess    Convert image to valid 16-color png file for TheSpace app.
+SUBCOMMANDS:
+  - paint         Paint input image on TheSpace app.
+  - preview       Ouput a series of png files to show how robot paint the target painting step by step.
+  - preprocess    Convert image to valid 16-color png file for TheSpace app.
 `
 
 export const CLI_USAGE_PAINT = `Usage:
-  npx ts-node src/cli.ts paint <png path> [--mode=<mode>] [--offset=<x,y>] [--interval=<seconds>]
+  npx ts-node src/cli.ts paint <PNG PATH> [OPTIONS]
 
-  Environment values below should be set for this subcommand:
-    - THESPACE_ADDRESS
-    - SNAPPER_ADDRESS
-    - PRIVATE_KEY
-    - PROVIDER_RPC_HTTP_URL
-    - MAX_PRICE
+OPTIONS:
+  --offset=<x,y>      TheSpace canvas coordinate (1-base) to start paint the image
+  --mode=<mode name>  The way to paint the image, valid mode: stroll (default), randomPick, blackFirst
+  --start=<x,y>       When in stroll mode, specify a pixel coordinate (1-base) as start point
+  --interval=<seconds> the interval between paint, default 1 second
+
+ENVIRONMENT VALUES:
+  THESPACE_ADDRESS
+  SNAPPER_ADDRESS
+  PRIVATE_KEY
+  PROVIDER_RPC_HTTP_URL
+  MAX_PRICE
 `
 
 export const CLI_COMMANDS = ['preview', 'paint', 'preprocess']

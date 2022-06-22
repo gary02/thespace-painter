@@ -1,7 +1,5 @@
-import type { Event, Contract } from "ethers";
 import type { Index, Coordinate } from "./utils";
 
-import axios from "axios";
 import { ethers } from "ethers";
 import { PNG } from "pngjs";
 
@@ -17,24 +15,6 @@ export interface Painting {
   alphas: number[];
   height: number;
   width: number;
-}
-
-export const fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
-  const regionId = 0;
-  const [_fromBlock, snapshotCid] = await snapper[
-    "latestSnapshotInfo(uint256)"
-  ](regionId);
-  const fromBlock = _fromBlock.toNumber();
-  const response = await axios(`https://d3ogaonsclhjen.cloudfront.net/${snapshotCid}`, { responseType: 'arraybuffer' });
-  const snapshot = PNG.sync.read(Buffer.from(response.data, 'binary'));
-  const canvas = fetchPainting(snapshot);
-  const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);
-  for (const e of colorEvents) {
-    const pixelID = parseInt(e.args!.tokenId);
-    const colorCode = parseInt(e.args!.color);
-    canvas.colors[pixelID-1] = code2color(colorCode);
-  }
-  return canvas;
 }
 
 export const fetchPainting = (png: PNG): Painting => {

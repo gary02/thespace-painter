@@ -1,8 +1,6 @@
-import type { Event, Contract } from "ethers";
 import type { Painting } from "./painting";
 import type { Coordinate, Index } from "./utils";
-
-import { ethers } from "ethers";
+import type { TheSpace } from "./thespace";
 
 import { color2code as color2cc } from "./painting";
 import { getFeeDataFromPolygon, index2coordinate } from "./utils";
@@ -21,25 +19,19 @@ const getRandomInt = (min: number, max: number) => {
 export const paint = async (
   painting: Painting,
   steps: number[],
-  canvas: Painting,
   offset: Coordinate,
   interval: number,
   maxPrice: number,
-  thespace: Contract,
+  thespace: TheSpace,
 ) => {
   //TODO: max gas fee
 
+  const canvas = thespace.getCanvas();
   const [ox, oy] = offset;
 
   const getPixelId = (paintingIdx: Index) => {
     const [x, y] = index2coordinate(paintingIdx, painting.width);
     return (y + oy - 1) * canvas.width + (x + ox);
-  }
-  const getColorCodeFromCanvas = (pixelId: number): number => {
-    return color2cc(canvas.colors[pixelId-1])
-  }
-  const getColorCodeFromContract = async(pixelId: number): Promise<number> => {
-    return (await thespace.getColor(pixelId)).toNumber();
   }
 
   for (const [i, step] of steps.entries()) {
@@ -55,7 +47,7 @@ export const paint = async (
     console.log('\n----------------------------------------------')    
     console.log(`painting pixelID ${pixelId} (${x}, ${y}) [${i+1} of ${steps.length}]`);
 
-    const oldColorCode = getColorCodeFromCanvas(pixelId);
+    const oldColorCode = thespace.getPixelColorCode(pixelId);
     const newColorCode = color2cc(painting.colors[step]);
 
     if (oldColorCode === newColorCode) {
@@ -64,18 +56,18 @@ export const paint = async (
     }
 
     const price = await thespace.getPrice(pixelId);
-    const p = Number(ethers.utils.formatEther(price));
 
-    if (p > maxPrice) {
-      console.log(`price ${p} too much, skip`);
+    if (price > maxPrice) {
+      console.log(`price ${price} too much, skip`);
       continue;
     }
 
-    if ((await getColorCodeFromContract(pixelId)) === newColorCode) {
-      // check color again
-      console.log('painted, skip');
-      continue;
-    }
+    //if ((await getColorCodeFromContract(pixelId)) === newColorCode) {
+    //  // check color again
+    //  console.log('painted, skip');
+    //  continue;
+    //}
+    //
     //const feeData = await getFeeDataFromPolygon();
     console.log('painting...')
     const tx = await thespace.setPixel(pixelId, price, price, newColorCode);

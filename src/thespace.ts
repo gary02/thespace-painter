@@ -15,6 +15,7 @@ export class TheSpace {
   signer: ethers.Wallet; 
   thespace: Contract;
   snapper: Contract;
+  registry: Contract | null;
   canvas: Painting | null;
 
   constructor(privateKey: string, rpcUrl: string, thespaceAddr: string, snapperAddr:string) {
@@ -33,6 +34,7 @@ export class TheSpace {
       this.signer
     );
 
+    this.registry = null;
     this.canvas = null;
   }
 
@@ -40,13 +42,13 @@ export class TheSpace {
   
     const registryAddr = await this.thespace.registry();
 
-    const registry = new ethers.Contract(
+    this.registry = new ethers.Contract(
       registryAddr,
       registryABI,
       this.signer
     );
 
-    const currencyAddr = await registry.currency();
+    const currencyAddr = await this.registry.currency();
     
     const currency = new ethers.Contract(
       currencyAddr,
@@ -67,7 +69,15 @@ export class TheSpace {
       await tx.wait();
     }
 
-    this.canvas = await fetchCanvas(this.snapper, registry);
+    this.canvas = await fetchCanvas(this.snapper, this.registry);
+    this.registry.on(
+      'Color',
+      (tokenId, color, owner) => {
+        const pixelId = tokenId.toNumber();
+        const colorCode = color.toNumber();
+        this.canvas!.colors[pixelId-1] = code2color(colorCode);
+      }
+    )
   }
 
   async getPrice(pixelId: number) {

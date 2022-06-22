@@ -62,12 +62,6 @@ export const paint = async (
       continue;
     }
 
-    //if ((await getColorCodeFromContract(pixelId)) === newColorCode) {
-    //  // check color again
-    //  console.log('painted, skip');
-    //  continue;
-    //}
-    //
     //const feeData = await getFeeDataFromPolygon();
     console.log('painting...')
     const tx = await thespace.setPixel(pixelId, price, price, newColorCode);

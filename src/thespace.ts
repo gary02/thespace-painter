@@ -32,13 +32,18 @@ export class TheSpace {
       thespaceAddr,
       thespaceABI,
       this.signer
-    );
-
+    ); 
     this.registry = null;
     this.canvas = null;
   }
 
   async init() {
+
+    const signerBalance = wei2ether(await this.signer.getBalance());
+    if (signerBalance < 0.01) {
+      console.warn(`WARN: wallet has only ${signerBalance} Matic`)
+    }
+
   
     const registryAddr = await this.thespace.registry();
 
@@ -57,9 +62,9 @@ export class TheSpace {
     );
 
     const balance = await currency.balanceOf(this.signer.address);
-    if ( balance.isZero() ) {
-      console.error(`error: this wallet address has no space tokens (erc20 ${currencyAddr})`)
-      throw Error();
+    if ( wei2ether(balance) < 1) {
+      console.error(`ERROR: this wallet address has few Space tokens (erc20 ${currencyAddr})`)
+      throw Error('Space Tokens too few');
     }
 
     const allowance = await currency.allowance(this.signer.address, registryAddr);
@@ -82,17 +87,26 @@ export class TheSpace {
 
   async getPrice(pixelId: number) {
     const price = await this.thespace.getPrice(pixelId);
-    return Number(ethers.utils.formatEther(price));
+    return wei2ether(price);
   }
 
   async setPixel(pixelId: number, bidPrice: number, newPrice: number, colorCode: number, overrides: ethers.Overrides) {
-    return await this.thespace.setPixel(
-      pixelId,
-      ethers.utils.parseEther(bidPrice.toString()),
-      ethers.utils.parseEther(newPrice.toString()),
-      colorCode,
-      overrides,
-    )
+    if (this.snapper.address === '0xc92c2944fe36ee4ddf7d160338ce2ef8c342c4ed') {
+      return await this.thespace.setPixel(
+        pixelId,
+        ethers.utils.parseEther(bidPrice.toString()),
+        ethers.utils.parseEther(newPrice.toString()),
+        colorCode,
+      )
+    } else {
+      return await this.thespace.setPixel(
+        pixelId,
+        ethers.utils.parseEther(bidPrice.toString()),
+        ethers.utils.parseEther(newPrice.toString()),
+        colorCode,
+        overrides,
+      )
+    }
   }
 
   getPixelColorCode(pixelId: number): number | never {
@@ -118,14 +132,22 @@ export class TheSpace {
 
 
 // helpers
+//
+const wei2ether = (bn: ethers.BigNumber): number => Number(ethers.utils.formatEther(bn));
 
 const fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
+  let cdn;
+  if (snapper.address === '0xc92c2944fe36ee4ddf7d160338ce2ef8c342c4ed') {
+    cdn = 'd1gykh5008m3d7.cloudfront.net';
+  } else {
+    cdn = 'd3ogaonsclhjen.cloudfront.net';
+  }
   const regionId = 0;
   const [_fromBlock, snapshotCid] = await snapper[
     "latestSnapshotInfo(uint256)"
   ](regionId);
   const fromBlock = _fromBlock.toNumber();
-  const response = await axios(`https://d3ogaonsclhjen.cloudfront.net/${snapshotCid}`, { responseType: 'arraybuffer' });
+  const response = await axios(`https://${cdn}/${snapshotCid}`, { responseType: 'arraybuffer' });
   const snapshot = PNG.sync.read(Buffer.from(response.data, 'binary'));
   const canvas = fetchPainting(snapshot);
   const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);

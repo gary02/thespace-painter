@@ -30,5 +30,5 @@ npx ts-node src/cli.ts paint tests/data/test.png --offset=100,100
 If you want to preview the painting process:
 
 ```bash
-npx ts-node src/cli.ts preview tests/data/test.png --offset=100,100
+npx ts-node src/cli.ts preview tests/data/test.png
 ```

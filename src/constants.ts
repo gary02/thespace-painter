@@ -30,6 +30,7 @@ ENVIRONMENT VALUES:
   PRIVATE_KEY
   PROVIDER_RPC_HTTP_URL
   MAX_PRICE
+  MAX_GAS_PRICE
 `
 
 export const CLI_COMMANDS = ['preview', 'paint', 'preprocess']

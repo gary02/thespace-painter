@@ -80,7 +80,7 @@ export const paint = async (
     console.log({ tx });
     //const tr = await tx.wait();
     //console.log({ tr });
-    await sleep(getRandomInt(interval * 1000 - 500, interval * 1000 + 500));
+    await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.5));
   }
 
   const checkInterval = 60 * 1000;

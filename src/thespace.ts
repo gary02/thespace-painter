@@ -85,12 +85,13 @@ export class TheSpace {
     return Number(ethers.utils.formatEther(price));
   }
 
-  async setPixel(pixelId: number, bidPrice: number, newPrice: number, colorCode: number) {
+  async setPixel(pixelId: number, bidPrice: number, newPrice: number, colorCode: number, overrides: ethers.Overrides) {
     return await this.thespace.setPixel(
       pixelId,
       ethers.utils.parseEther(bidPrice.toString()),
       ethers.utils.parseEther(newPrice.toString()),
-      colorCode
+      colorCode,
+      overrides,
     )
   }
 

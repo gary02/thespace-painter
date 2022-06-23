@@ -62,9 +62,9 @@ export const paint = async (
       continue;
     }
 
-    //const feeData = await getFeeDataFromPolygon();
+    const feeData = await getFeeDataFromPolygon();
     console.log('painting...')
-    const tx = await thespace.setPixel(pixelId, price, price, newColorCode);
+    const tx = await thespace.setPixel(pixelId, price, price, newColorCode, feeData);
     console.log({ tx });
     //const tr = await tx.wait();
     //console.log({ tr });

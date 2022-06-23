@@ -22,6 +22,7 @@ export const paint = async (
   offset: Coordinate,
   interval: number,
   maxPrice: number,
+  maxGasPrice: number,
   thespace: TheSpace,
 ) => {
   //TODO: max gas fee

@@ -146,7 +146,9 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
   const privateKey = process.env.PRIVATE_KEY;
   const rpcUrl = process.env.PROVIDER_RPC_HTTP_URL;
   const _maxPrice = process.env.MAX_PRICE;
+  const _maxGasPrice = process.env.MAX_GAS_PRICE;
   let maxPrice = (_maxPrice !== undefined) ? parseInt(_maxPrice) : undefined;
+  let maxGasPrice = (_maxGasPrice !== undefined) ? parseInt(_maxGasPrice) : undefined;
 
   if (thespaceAddr === undefined) {
     console.error('error: please set THESPACE_ADDRESS env');
@@ -165,7 +167,10 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
     process.exit(1);
   };
   if (maxPrice === undefined ) {
-    maxPrice = 50
+    maxPrice = 10
+  };
+  if (maxGasPrice === undefined ) {
+    maxGasPrice = 60
   };
 
   console.log('fetching painting data...')
@@ -195,7 +200,7 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
   await thespace.init();
   console.timeEnd('init thespace')
 
-  await _paint(painting, steps, offset, interval, maxPrice!, thespace);
+  await _paint(painting, steps, offset, interval, maxPrice!, maxGasPrice!, thespace);
 }
 
 const preview = (path: string, mode: string, labelPoints: Coordinate[]) => {

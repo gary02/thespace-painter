@@ -39,6 +39,12 @@ export class TheSpace {
   }
 
   async init() {
+
+    const signerBalance = wei2ether(await this.signer.getBalance());
+    if (signerBalance < 0.01) {
+      console.warn(`WARN: wallet has only ${signerBalance} Matic`)
+    }
+
   
     const registryAddr = await this.thespace.registry();
 
@@ -57,9 +63,9 @@ export class TheSpace {
     );
 
     const balance = await currency.balanceOf(this.signer.address);
-    if ( balance.isZero() ) {
-      console.error(`error: this wallet address has no space tokens (erc20 ${currencyAddr})`)
-      throw Error();
+    if ( wei2ether(balance) < 1) {
+      console.error(`ERROR: this wallet address has few Space tokens (erc20 ${currencyAddr})`)
+      throw Error('Space Tokens too few');
     }
 
     const allowance = await currency.allowance(this.signer.address, registryAddr);
@@ -82,7 +88,7 @@ export class TheSpace {
 
   async getPrice(pixelId: number) {
     const price = await this.thespace.getPrice(pixelId);
-    return Number(ethers.utils.formatEther(price));
+    return wei2ether(price);
   }
 
   async setPixel(pixelId: number, bidPrice: number, newPrice: number, colorCode: number, overrides: ethers.Overrides) {
@@ -118,6 +124,8 @@ export class TheSpace {
 
 
 // helpers
+//
+const wei2ether = (bn: ethers.BigNumber): number => Number(ethers.utils.formatEther(bn));
 
 const fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
   const regionId = 0;

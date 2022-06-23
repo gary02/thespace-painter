@@ -35,40 +35,70 @@ export const paint = async (
     return (y + oy - 1) * canvas.width + (x + ox);
   }
 
-  for (const [i, step] of steps.entries()) {
-
+  const transaction = async (index: number, step: number) => {
     const pixelId = getPixelId(step);
 
     if (pixelId > canvas.width * canvas.height) {
-      console.log('out of thespace map, skip');
-      continue;
+      console.log("out of thespace map, skip");
+      return;
     }
 
-    const [x, y] = index2coordinate(pixelId - 1, canvas.width).map((i) => i + 1)
-    console.log('\n----------------------------------------------')    
-    console.log(`painting pixelID ${pixelId} (${x}, ${y}) [${i+1} of ${steps.length}]`);
+    const [x, y] = index2coordinate(pixelId - 1, canvas.width).map(
+      (i) => i + 1
+    );
+    console.log("\n----------------------------------------------");
+    console.log(
+      `painting pixelID ${pixelId} (${x}, ${y}) [${index + 1} of ${
+        steps.length
+      }]`
+    );
 
     const oldColorCode = thespace.getPixelColorCode(pixelId);
     const newColorCode = color2cc(painting.colors[step]);
 
     if (oldColorCode === newColorCode) {
-      console.log('painted, skip');
-      continue;
+      console.log("painted, skip");
+      return;
     }
 
     const price = await thespace.getPrice(pixelId);
 
     if (price > maxPrice) {
       console.log(`price ${price} too much, skip`);
-      continue;
+      return;
     }
 
     const feeData = await getFeeDataFromPolygon();
-    console.log('painting...')
-    const tx = await thespace.setPixel(pixelId, price, price, newColorCode, feeData);
+    console.log("painting...");
+    const tx = await thespace.setPixel(
+      pixelId,
+      price,
+      price,
+      newColorCode,
+      feeData
+    );
     console.log({ tx });
     //const tr = await tx.wait();
     //console.log({ tr });
     await sleep(getRandomInt(interval * 1000 - 500, interval * 1000 + 500));
- }
+  }
+
+  const checkInterval = 60 * 1000;
+  let lastTick = Date.now();
+  const checkPrevPiexl = async (index: number) => {
+    if (Date.now() - lastTick < checkInterval) return;
+
+    console.log("\n--------Time to Check Prev Pixel.------");
+    for (let j = 0; j < index - 10; j++) {
+      const prevStep = steps[j];
+      await transaction(j, prevStep);
+    }
+    lastTick = Date.now();
+    console.log("--------Check End!------\n");
+  };
+  
+  for (const [i, step] of steps.entries()) {
+    await checkPrevPiexl(i);
+    await transaction(i, step);
+  }
 };

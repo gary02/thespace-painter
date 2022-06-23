@@ -32,8 +32,7 @@ export class TheSpace {
       thespaceAddr,
       thespaceABI,
       this.signer
-    );
-
+    ); 
     this.registry = null;
     this.canvas = null;
   }
@@ -128,12 +127,18 @@ export class TheSpace {
 const wei2ether = (bn: ethers.BigNumber): number => Number(ethers.utils.formatEther(bn));
 
 const fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
+  let cdn;
+  if (snapper.address === '0xc92c2944fe36ee4ddf7d160338ce2ef8c342c4ed') {
+    cdn = 'd1gykh5008m3d7.cloudfront.net';
+  } else {
+    cdn = 'd3ogaonsclhjen.cloudfront.net';
+  }
   const regionId = 0;
   const [_fromBlock, snapshotCid] = await snapper[
     "latestSnapshotInfo(uint256)"
   ](regionId);
   const fromBlock = _fromBlock.toNumber();
-  const response = await axios(`https://d3ogaonsclhjen.cloudfront.net/${snapshotCid}`, { responseType: 'arraybuffer' });
+  const response = await axios(`https://${cdn}/${snapshotCid}`, { responseType: 'arraybuffer' });
   const snapshot = PNG.sync.read(Buffer.from(response.data, 'binary'));
   const canvas = fetchPainting(snapshot);
   const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);

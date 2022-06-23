@@ -91,13 +91,22 @@ export class TheSpace {
   }
 
   async setPixel(pixelId: number, bidPrice: number, newPrice: number, colorCode: number, overrides: ethers.Overrides) {
-    return await this.thespace.setPixel(
-      pixelId,
-      ethers.utils.parseEther(bidPrice.toString()),
-      ethers.utils.parseEther(newPrice.toString()),
-      colorCode,
-      overrides,
-    )
+    if (this.snapper.address === '0xc92c2944fe36ee4ddf7d160338ce2ef8c342c4ed') {
+      return await this.thespace.setPixel(
+        pixelId,
+        ethers.utils.parseEther(bidPrice.toString()),
+        ethers.utils.parseEther(newPrice.toString()),
+        colorCode,
+      )
+    } else {
+      return await this.thespace.setPixel(
+        pixelId,
+        ethers.utils.parseEther(bidPrice.toString()),
+        ethers.utils.parseEther(newPrice.toString()),
+        colorCode,
+        overrides,
+      )
+    }
   }
 
   getPixelColorCode(pixelId: number): number | never {

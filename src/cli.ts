@@ -5,13 +5,10 @@ import { ethers } from "ethers";
 import { PNG } from "pngjs";
 
 import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR, MODES, COLORS } from "./constants";
-import { fetchPainting, fetchCanvas, convert16color, stroll, blackFirst, randomPick } from "./painting";
+import { fetchPainting, convert16color, stroll, blackFirst, randomPick } from "./painting";
+import { TheSpace } from "./thespace";
 import { paint as _paint } from "./painter";
 import { hash } from "./utils";
-import { abi as thespaceABI } from "../abi/TheSpace.json";
-import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
-import { abi as erc20ABI } from "../abi/ERC20.json";
-import { abi as snapperABI } from "../abi/Snapper.json";
 
 const cli = () => {
 
@@ -149,7 +146,9 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
   const privateKey = process.env.PRIVATE_KEY;
   const rpcUrl = process.env.PROVIDER_RPC_HTTP_URL;
   const _maxPrice = process.env.MAX_PRICE;
+  const _maxGasPrice = process.env.MAX_GAS_PRICE;
   let maxPrice = (_maxPrice !== undefined) ? parseInt(_maxPrice) : undefined;
+  let maxGasPrice = (_maxGasPrice !== undefined) ? parseInt(_maxGasPrice) : undefined;
 
   if (thespaceAddr === undefined) {
     console.error('error: please set THESPACE_ADDRESS env');
@@ -168,57 +167,15 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
     process.exit(1);
   };
   if (maxPrice === undefined ) {
-    maxPrice = 50
+    maxPrice = 10
   };
-
-  console.log('setting up...')
-  const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-  const signer = new ethers.Wallet(privateKey, provider)
-
-  const snapper = new ethers.Contract(
-    snapperAddr,
-    snapperABI,
-    provider,
-  );
-
-  const thespace = new ethers.Contract(
-    thespaceAddr,
-    thespaceABI,
-    signer
-  );
-  const registryAddr = await thespace.registry();
-
-  const registry = new ethers.Contract(
-    registryAddr,
-    registryABI,
-    provider
-  );
-
-  const currencyAddr = await registry.currency();
-  
-  const currency = new ethers.Contract(
-    currencyAddr,
-    erc20ABI,
-    signer
-  );
-
-  const balance = await currency.balanceOf(signer.address);
-  if ( balance.isZero() ) {
-    console.error(`error: this wallet address has no space tokens (erc20 ${currencyAddr})`)
-    process.exit(1);
-  }
-
-  const allowance = await currency.allowance(signer.address, registryAddr);
-
-  if ( allowance.isZero() ) {
-    const tx = await currency.approve(registryAddr, balance);
-    await tx.wait();
-  }
+  if (maxGasPrice === undefined ) {
+    maxGasPrice = 60
+  };
 
   console.log('fetching painting data...')
   const painting = fetchPainting(readPNG(path));
   console.log('fetching canvas data...')
-  const canvas = await fetchCanvas(snapper, registry);
 
   if (hasInvalidColors(painting.colors)) {
     console.error('error: this image contains invalid colors. You can use `preprocess` subcommand to convert it to valid image')
@@ -238,7 +195,12 @@ const paint = async (path: string, mode: string, offset: Coordinate, interval: n
     }
   };
 
-  await _paint(painting, steps, canvas, offset, interval, maxPrice!, thespace);
+  const thespace = new TheSpace(privateKey, rpcUrl, thespaceAddr, snapperAddr);
+  console.time('init thespace')
+  await thespace.init();
+  console.timeEnd('init thespace')
+
+  await _paint(painting, steps, offset, interval, maxPrice!, maxGasPrice!, thespace);
 }
 
 const preview = (path: string, mode: string, labelPoints: Coordinate[]) => {

@@ -70,8 +70,8 @@ export class TheSpace {
 
     const allowance = await currency.allowance(this.signer.address, registryAddr);
 
-    if ( allowance.isZero() ) {
-      const tx = await currency.approve(registryAddr, balance);
+    if ( wei2ether(allowance) < 1 ) {
+      const tx = await currency.approve(registryAddr, balance.mul(1000));
       await tx.wait();
     }
 

@@ -26,6 +26,7 @@ export const paint = async (
   thespace: TheSpace,
 ) => {
   //TODO: max gas fee
+  let catchErrorTime = 0
 
   const canvas = thespace.getCanvas();
   const [ox, oy] = offset;
@@ -35,7 +36,7 @@ export const paint = async (
     return (y + oy - 1) * canvas.width + (x + ox);
   }
 
-  const transaction = async (index: number, step: number) => {
+  const transaction = async (index: number, step: number, checking: boolean = false) => {
     const pixelId = getPixelId(step);
 
     if (pixelId > canvas.width * canvas.height) {
@@ -46,18 +47,22 @@ export const paint = async (
     const [x, y] = index2coordinate(pixelId - 1, canvas.width).map(
       (i) => i + 1
     );
-    console.log("\n----------------------------------------------");
-    console.log(
-      `painting pixelID ${pixelId} (${x}, ${y}) [${index + 1} of ${
-        steps.length
-      }]`
-    );
+    if (!checking) {
+        console.log("\n----------------------------------------------");
+        console.log(
+          `painting pixelID ${pixelId} (${x}, ${y}) [${index + 1} of ${
+            steps.length
+          }]`
+        );
+    }
 
     const oldColorCode = thespace.getPixelColorCode(pixelId);
     const newColorCode = color2cc(painting.colors[step]);
 
     if (oldColorCode === newColorCode) {
-      console.log("painted, skip");
+        if (!checking) {
+            console.log("painted, skip");
+        }      
       return;
     }
 
@@ -69,17 +74,32 @@ export const paint = async (
     }
 
     const feeData = await getFeeDataFromPolygon();
-    console.log("painting...");
-    const tx = await thespace.setPixel(
-      pixelId,
-      price,
-      price,
-      newColorCode,
-      feeData
-    );
-    console.log({ tx });
+    if (checking) {
+        console.log("repainting...");
+    } else {
+        console.log("painting...");
+    }
+    
+    try {
+        const tx = await thespace.setPixel(
+          pixelId,
+          price,
+          price,
+          newColorCode,
+          {}
+        );
+        console.log({ tx });
+    } catch (error: any) {
+        console.error(error);
+        catchErrorTime += 1;
+        if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
+          console.log(`Not enough Matic!!!!!`);
+          process.exit(1);
+        }
+    }    
     //const tr = await tx.wait();
     //console.log({ tr });
+    console.log(`Transaction fail ${catchErrorTime} times.`);
     await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.5));
   }
 
@@ -91,7 +111,7 @@ export const paint = async (
     console.log("\n--------Time to Check Prev Pixel.------");
     for (let j = 0; j < index - 10; j++) {
       const prevStep = steps[j];
-      await transaction(j, prevStep);
+      await transaction(j, prevStep, true);
     }
     lastTick = Date.now();
     console.log("--------Check End!------\n");

@@ -93,7 +93,7 @@ export const paint = async (
         console.error(error);
         catchErrorTime += 1;
         if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
-          console.log(`Don't enough Matic!!!!!`);
+          console.log(`No enough Matic!!!!!`);
           process.exit(1);
         }
     }    

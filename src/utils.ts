@@ -21,8 +21,8 @@ export const getFeeDataFromPolygon = async () => {
       method: "get",
       url: "https://gasstation-mainnet.matic.network/v2",
     });
-    maxFeePerGas = toWei(data.fast.maxFee);
-    maxPriorityFeePerGas = toWei(data.fast.maxPriorityFee);
+    maxFeePerGas = toWei(data.safeLow.maxFee);
+    maxPriorityFeePerGas = toWei(data.safeLow.maxPriorityFee);
   } catch (err) {
     throw err;
   }

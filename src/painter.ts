@@ -90,15 +90,15 @@ export const paint = async (
         );
         console.log({ tx });
         await sleep(getRandomInt(interval * 1000 * 0.2, interval * 1000 * 1.8));
-        console.time('waiting tx...');
-        await tx.wait()
-        console.timeEnd('waiting tx...');
+        //  console.time('waiting tx...');
+        //  await tx.wait()
+        //  console.timeEnd('waiting tx...');
     } catch (error: any) {
         console.error(error);
         catchErrorTime += 1;
-      // if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
-      //   throw new Error('Not enough Matic');
-      //  }
+        // if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
+        //   throw new Error('Not enough Matic');
+        // }
     }    
     console.log(`Transaction fail ${catchErrorTime} times.`);
   }

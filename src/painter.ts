@@ -72,22 +72,15 @@ export const paint = async (
       return;
     }
 
-    const feeData = await getFeeDataFromPolygon();
-    const gasPrice = Number(feeData.maxFeePerGas) / 1000000000;
-
-    console.log({gasPrice});
-    if (gasPrice > maxGasPrice) {
-      console.log(`gas price ${gasPrice} gwei too much, skip`);
-      return;
-    }
-
-    if (checking) {
-        console.log("repainting...");
-    } else {
-        console.log("painting...");
-    }
-    
     try {
+        const feeData = await getFeeDataFromPolygon();
+        const gasPrice = Number(feeData.maxFeePerGas) / 1000000000;
+
+        console.log({gasPrice});
+        if (gasPrice > maxGasPrice) {
+          console.log(`gas price ${gasPrice} gwei too much, skip`);
+          return;
+        }
         const tx = await thespace.setPixel(
           pixelId,
           price,
@@ -103,12 +96,10 @@ export const paint = async (
     } catch (error: any) {
         console.error(error);
         catchErrorTime += 1;
-        if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
-          throw new Error('Not enough Matic');
-        }
+      // if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
+      //   throw new Error('Not enough Matic');
+      //  }
     }    
-    //const tr = await tx.wait();
-    //console.log({ tr });
     console.log(`Transaction fail ${catchErrorTime} times.`);
   }
 

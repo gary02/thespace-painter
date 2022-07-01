@@ -89,7 +89,7 @@ export const paint = async (
           feeData
         );
         console.log({ tx });
-        await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.2));
+        await sleep(getRandomInt(interval * 1000 * 0.2, interval * 1000 * 1.8));
         console.time('waiting tx...');
         await tx.wait()
         console.timeEnd('waiting tx...');

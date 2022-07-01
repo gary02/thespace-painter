@@ -96,6 +96,7 @@ export const paint = async (
           feeData
         );
         console.log({ tx });
+        await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.2));
         await tx.wait()
     } catch (error: any) {
         console.error(error);
@@ -108,7 +109,6 @@ export const paint = async (
     //const tr = await tx.wait();
     //console.log({ tr });
     console.log(`Transaction fail ${catchErrorTime} times.`);
-    await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.2));
   }
 
   const checkInterval = 60 * 1000;

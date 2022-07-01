@@ -96,9 +96,9 @@ export const paint = async (
     } catch (error: any) {
         console.error(error);
         catchErrorTime += 1;
-        // if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
-        //   throw new Error('Not enough Matic');
-        // }
+        if (error?.reason === "execution reverted: ERC20: transfer amount exceeds balance") {
+          throw new Error('Not enough $Space');
+        }
     }    
     console.log(`Transaction fail ${catchErrorTime} times.`);
   }

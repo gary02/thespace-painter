@@ -97,7 +97,9 @@ export const paint = async (
         );
         console.log({ tx });
         await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.2));
+        console.time('waiting tx...');
         await tx.wait()
+        console.timeEnd('waiting tx...');
     } catch (error: any) {
         console.error(error);
         catchErrorTime += 1;

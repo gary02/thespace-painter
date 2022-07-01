@@ -2,7 +2,6 @@ import type { Painting } from "./painting";
 import type { Coordinate, Index } from "./utils";
 import type { TheSpace } from "./thespace";
 
-import { ethers } from "ethers";
 import { color2code as color2cc } from "./painting";
 import { getFeeDataFromPolygon, index2coordinate } from "./utils";
 
@@ -74,7 +73,7 @@ export const paint = async (
     }
 
     const feeData = await getFeeDataFromPolygon();
-    const gasPrice = Number(ethers.utils.formatUnits(feeData.maxFeePerGas,'gwei'));
+    const gasPrice = Number(feeData.maxFeePerGas) / 1000000000;
 
     console.log({gasPrice});
     if (gasPrice > maxGasPrice) {

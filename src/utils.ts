@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import axios from "axios";
 
 export type Index = number;
@@ -16,19 +15,14 @@ export const coordinate2index = (coord: Coordinate, width: number): Index => {
 
 export const getFeeDataFromPolygon = async () => {
   let maxFeePerGas, maxPriorityFeePerGas;
+  const toWei = (gwei: number) => Math.ceil(gwei * 1000000000).toString();
   try {
     const { data } = await axios({
       method: "get",
       url: "https://gasstation-mainnet.matic.network/v2",
     });
-    maxFeePerGas = ethers.utils.parseUnits(
-      Math.ceil(data.fast.maxFee) + "",
-      "gwei"
-    );
-    maxPriorityFeePerGas = ethers.utils.parseUnits(
-      Math.ceil(data.fast.maxPriorityFee) + "",
-      "gwei"
-    );
+    maxFeePerGas = toWei(data.fast.maxFee);
+    maxPriorityFeePerGas = toWei(data.fast.maxPriorityFee);
   } catch (err) {
     throw err;
   }

@@ -76,6 +76,7 @@ export const paint = async (
     const feeData = await getFeeDataFromPolygon();
     const gasPrice = Number(ethers.utils.formatUnits(feeData.maxFeePerGas,'gwei'));
 
+    console.log({gasPrice});
     if (gasPrice > maxGasPrice) {
       console.log(`gas price ${gasPrice} gwei too much, skip`);
       return;
@@ -96,6 +97,7 @@ export const paint = async (
           feeData
         );
         console.log({ tx });
+        await tx.wait()
     } catch (error: any) {
         console.error(error);
         catchErrorTime += 1;
@@ -107,7 +109,7 @@ export const paint = async (
     //const tr = await tx.wait();
     //console.log({ tr });
     console.log(`Transaction fail ${catchErrorTime} times.`);
-    await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.5));
+    await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.2));
   }
 
   const checkInterval = 60 * 1000;

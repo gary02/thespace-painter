@@ -15,7 +15,6 @@ export const coordinate2index = (coord: Coordinate, width: number): Index => {
 }
 
 export const getFeeDataFromPolygon = async () => {
-  const defaultGasFee = ethers.BigNumber.from(30000000000);
   let maxFeePerGas, maxPriorityFeePerGas;
   try {
     const { data } = await axios({
@@ -23,17 +22,15 @@ export const getFeeDataFromPolygon = async () => {
       url: "https://gasstation-mainnet.matic.network/v2",
     });
     maxFeePerGas = ethers.utils.parseUnits(
-      Math.ceil(data.safeLow.maxFee) + "",
+      Math.ceil(data.fast.maxFee) + "",
       "gwei"
     );
     maxPriorityFeePerGas = ethers.utils.parseUnits(
-      Math.ceil(data.safeLow.maxPriorityFee) + "",
+      Math.ceil(data.fast.maxPriorityFee) + "",
       "gwei"
     );
   } catch (err) {
-    console.warn(err);
-    maxFeePerGas = defaultGasFee;
-    maxPriorityFeePerGas = defaultGasFee;
+    throw err;
   }
   return {
     maxFeePerGas,

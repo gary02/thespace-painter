@@ -6,7 +6,7 @@ import { PNG } from "pngjs";
 
 import { CLI_USAGE, CLI_USAGE_PAINT, CLI_COMMANDS, BASE_OUT_DIR, MODES, COLORS } from "./constants";
 import { fetchPainting, convert16color, stroll, blackFirst, randomPick } from "./painting";
-import { TheSpace } from "./thespace";
+import { TheSpace, fetchCanvasPng } from "./thespace";
 import { paint as _paint } from "./painter";
 import { hash } from "./utils";
 
@@ -134,6 +134,11 @@ const cli = () => {
       getModeOrPrintHelp(CLI_USAGE),
       getLabelPointsOrPrintHelp(CLI_USAGE),
     );
+  } else if (command === 'dryrun') {
+    dryrun(
+      getImagePathOrPrintHelp(CLI_USAGE),
+      getOffsetOrPrintHelp(CLI_USAGE_PAINT)
+    );
   } else {
     preprocess(getImagePathOrPrintHelp(CLI_USAGE));
   }
@@ -248,14 +253,38 @@ const preview = (path: string, mode: string, labelPoints: Coordinate[]) => {
   console.info(`done, try run "feh --keep-zoom-vp --force-aliasing -Z -S name -D 0.005 './${outDir}/'" to preview painting process if feh app installed`)
 }
 
-const preprocess = (path: string) => {
+const dryrun = (path: string,  offset: Coordinate) => {
+  const snapperAddr = process.env.SNAPPER_ADDRESS;
+  const rpcUrl = process.env.PROVIDER_RPC_HTTP_URL;
+  if (snapperAddr === undefined) {
+    console.error('error: please set SNAPPER_ADDRESS env');
+    process.exit(1);
+  };
+  if (rpcUrl === undefined) {
+    console.error('error: please set PROVIDER_RPC_HTTP_URL env');
+    process.exit(1);
+  };
+
+  const painting = fetchPainting(readPNG(path));
+  const outFilePath = BASE_OUT_DIR + hash(path) + '-dryrun.png';
+
+  const canvasPng = fetchCanvasPng(snapperAddr, rpcUrl);
 
   if (!fs.existsSync(BASE_OUT_DIR)) {
       fs.mkdirSync(BASE_OUT_DIR);
   }
+  fs.writeFileSync(outFilePath , PNG.sync.write(png))
+}
+
+const preprocess = (path: string) => {
+
   const png = readPNG(path);
   convert16color(png);
   const outFilePath = BASE_OUT_DIR + hash(path) + '.png';
+
+  if (!fs.existsSync(BASE_OUT_DIR)) {
+      fs.mkdirSync(BASE_OUT_DIR);
+  }
   fs.writeFileSync(outFilePath , PNG.sync.write(png))
   console.info(`output to './${outFilePath}'`)
 }

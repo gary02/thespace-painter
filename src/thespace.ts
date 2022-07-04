@@ -45,7 +45,6 @@ export class TheSpace {
       console.warn(`WARN: wallet ${this.signer.address} has only ${signerBalance} Matic`)
     }
 
-  
     const registryAddr = await this.thespace.registry();
 
     this.registry = new ethers.Contract(
@@ -75,7 +74,7 @@ export class TheSpace {
       await tx.wait();
     }
 
-    this.canvas = await fetchCanvas(this.snapper, this.registry);
+    this.canvas = await _fetchCanvas(this.snapper, this.registry);
     this.registry.on(
       'Color',
       (tokenId, color, owner) => {
@@ -138,6 +137,15 @@ export class TheSpace {
 //  const getColorCodeFromContract = async(pixelId: number): Promise<number> => {
 //    return (await thespace.getColor(pixelId)).toNumber();
 //  }
+const fetchCanvasPng = async (snapperAddr: string, rpcUrl: string) {
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+  snapper = new ethers.Contract(
+    snapperAddr,
+    snapperABI,
+    provider
+  );
+  return await _fetchSnapshotPng(snapper);
+}
 
 
 
@@ -145,7 +153,7 @@ export class TheSpace {
 //
 const wei2ether = (bn: ethers.BigNumber): number => Number(ethers.utils.formatEther(bn));
 
-const fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
+const _fetchSnapshotPng = async (snapper: Contract): Promise<PNG> => {
   let cdn;
   if (snapper.address === '0xc92c2944fe36ee4ddf7d160338ce2ef8c342c4ed') {
     cdn = 'd1gykh5008m3d7.cloudfront.net';
@@ -158,7 +166,11 @@ const fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Paint
   ](regionId);
   const fromBlock = _fromBlock.toNumber();
   const response = await axios(`https://${cdn}/${snapshotCid}`, { responseType: 'arraybuffer' });
-  const snapshot = PNG.sync.read(Buffer.from(response.data, 'binary'));
+  return PNG.sync.read(Buffer.from(response.data, 'binary'));
+}
+
+const _fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
+  const snapshot = await _fetchSnapshotPng(snapper);
   const canvas = fetchPainting(snapshot);
   const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);
   for (const e of colorEvents) {

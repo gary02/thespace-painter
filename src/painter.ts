@@ -25,7 +25,6 @@ export const paint = async (
   maxGasPrice: number,
   thespace: TheSpace,
 ) => {
-  //TODO: max gas fee
   let catchErrorTime = 0
 
   const canvas = thespace.getCanvas();
@@ -73,34 +72,35 @@ export const paint = async (
       return;
     }
 
-    const feeData = await getFeeDataFromPolygon();
-    if (checking) {
-        console.log("repainting...");
-    } else {
-        console.log("painting...");
-    }
-    
     try {
+        const feeData = await getFeeDataFromPolygon();
+        const gasPrice = Number(feeData.maxFeePerGas) / 1000000000;
+
+        console.log({gasPrice});
+        if (gasPrice > maxGasPrice) {
+          console.log(`gas price ${gasPrice} gwei too much, skip`);
+          return;
+        }
         const tx = await thespace.setPixel(
           pixelId,
           price,
           price,
           newColorCode,
-          {}
+          feeData
         );
         console.log({ tx });
+        await sleep(getRandomInt(interval * 1000 * 0.2, interval * 1000 * 1.8));
+        //  console.time('waiting tx...');
+        //  await tx.wait()
+        //  console.timeEnd('waiting tx...');
     } catch (error: any) {
         console.error(error);
         catchErrorTime += 1;
-        if (error?.code === "UNPREDICTABLE_GAS_LIMIT") {
-          console.log(`Not enough Matic!!!!!`);
-          process.exit(1);
+        if (error?.reason === "execution reverted: ERC20: transfer amount exceeds balance") {
+          throw new Error('Not enough $Space');
         }
     }    
-    //const tr = await tx.wait();
-    //console.log({ tr });
     console.log(`Transaction fail ${catchErrorTime} times.`);
-    await sleep(getRandomInt(interval * 1000 * 0.5, interval * 1000 * 1.5));
   }
 
   const checkInterval = 60 * 1000;

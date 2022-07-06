@@ -25,11 +25,12 @@ OPTIONS:
             --interval=<seconds>            the interval between paint, default 1 second
 
 ENVIRONMENT VALUES:
-  THESPACE_ADDRESS
-  SNAPPER_ADDRESS
-  PRIVATE_KEY
-  PROVIDER_RPC_HTTP_URL
-  MAX_PRICE
+  THESPACE_ADDRESS                          TheSpace contract address to paint
+  SNAPPER_ADDRESS                           TheSpace related Snapper contract address, used to fetch canvas
+  PRIVATE_KEY                               Wallet private key
+  PROVIDER_RPC_HTTP_URL                     RPC network endpoint
+  MAX_PRICE                                 Max accepted pixel price in $Space
+  MAX_GAS_PRICE                             Max accpeted gas price in wei
 `
 
 export const CLI_COMMANDS = ['preview', 'paint', 'preprocess']

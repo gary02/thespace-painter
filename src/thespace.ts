@@ -137,9 +137,9 @@ export class TheSpace {
 //  const getColorCodeFromContract = async(pixelId: number): Promise<number> => {
 //    return (await thespace.getColor(pixelId)).toNumber();
 //  }
-const fetchCanvasPng = async (snapperAddr: string, rpcUrl: string) {
+export const fetchCanvasPng = async (snapperAddr: string, rpcUrl: string) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
-  snapper = new ethers.Contract(
+  let snapper = new ethers.Contract(
     snapperAddr,
     snapperABI,
     provider
@@ -172,11 +172,11 @@ const _fetchSnapshotPng = async (snapper: Contract): Promise<PNG> => {
 const _fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
   const snapshot = await _fetchSnapshotPng(snapper);
   const canvas = fetchPainting(snapshot);
-  const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);
-  for (const e of colorEvents) {
-    const pixelID = parseInt(e.args!.tokenId);
-    const colorCode = parseInt(e.args!.color);
-    canvas.colors[pixelID-1] = code2color(colorCode);
-  }
+//   const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);
+//   for (const e of colorEvents) {
+//     const pixelID = parseInt(e.args!.tokenId);
+//     const colorCode = parseInt(e.args!.color);
+//     canvas.colors[pixelID-1] = code2color(colorCode);
+//   }
   return canvas;
 }

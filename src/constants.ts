@@ -33,6 +33,6 @@ ENVIRONMENT VALUES:
   MAX_GAS_PRICE                             Max accpeted gas price in wei
 `
 
-export const CLI_COMMANDS = ['preview', 'paint', 'preprocess']
+export const CLI_COMMANDS = ['preview', 'paint', 'preprocess', 'dryrun']
 
 export const BASE_OUT_DIR = 'out/'

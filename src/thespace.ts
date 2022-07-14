@@ -6,6 +6,7 @@ import { PNG } from "pngjs";
 import { ethers } from "ethers";
 
 import { fetchPainting, code2color, color2code } from './painting'
+import { getFeeDataFromPolygon } from "./utils";
 import { abi as thespaceABI } from "../abi/TheSpace.json";
 import { abi as registryABI } from "../abi/TheSpaceRegistry.json";
 import { abi as erc20ABI } from "../abi/ERC20.json";
@@ -67,7 +68,7 @@ export class TheSpace {
       throw new Error('Space Tokens too few');
     }
 
-    const allowance = await currency.allowance(this.signer.address, registryAddr);
+    const allowance = await currency.allowance(this.signer.address, registryAddr, await getFeeDataFromPolygon());
 
     if ( wei2ether(allowance) < 1 ) {
       const tx = await currency.approve(registryAddr, balance.mul(1000));
@@ -172,11 +173,15 @@ const _fetchSnapshotPng = async (snapper: Contract): Promise<PNG> => {
 const _fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
   const snapshot = await _fetchSnapshotPng(snapper);
   const canvas = fetchPainting(snapshot);
-//   const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);
-//   for (const e of colorEvents) {
-//     const pixelID = parseInt(e.args!.tokenId);
-//     const colorCode = parseInt(e.args!.color);
-//     canvas.colors[pixelID-1] = code2color(colorCode);
-//   }
+  const [_fromBlock, snapshotCid] = await snapper[
+    "latestSnapshotInfo(uint256)"
+  ](regionId);
+  const fromBlock = _fromBlock.toNumber();
+  const colorEvents = await registry.queryFilter(registry.filters.Color(), fromBlock);
+  for (const e of colorEvents) {
+    const pixelID = parseInt(e.args!.tokenId);
+    const colorCode = parseInt(e.args!.color);
+    canvas.colors[pixelID-1] = code2color(colorCode);
+  }
   return canvas;
 }

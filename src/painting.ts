@@ -52,9 +52,9 @@ export const convert16color = (png: PNG): PNG => {
     const g = png.data[idx + 1];
     const b = png.data[idx + 2];
     const a = png.data[idx + 3];
-    if (a === 0) {
-      continue;
-    }
+    //if (a === 0) {
+    //  continue;
+    //}
     const [nr, ng, nb] = closestRGB([r, g, b], rgbs);
     png.data[idx] = nr;
     png.data[idx + 1] = ng;

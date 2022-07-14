@@ -339,6 +339,13 @@ const dryrun = async (path: string, offset: Coordinate) => {
 const preprocess = (path: string) => {
   const png = readPNG(path);
   convert16color(png);
+  if (hasInvalidColors(fetchPainting(png).colors)) {
+    console.error(
+      "error: preprocess failed, still has invalied colors"
+    );
+    process.exit(1);
+  }
+
   const outFilePath = BASE_OUT_DIR + hash(path) + ".png";
 
   if (!fs.existsSync(BASE_OUT_DIR)) {

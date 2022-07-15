@@ -7,10 +7,11 @@ export const COLORS = [
 export const MODES = ['blackFirst', 'randomPick', 'stroll']
 
 export const CLI_USAGE = `Usage:
-  node bot.js src/cli.ts <SUBCOMMAND>
+  node bot.js <SUBCOMMAND>
 
 SUBCOMMANDS:
   - paint         Paint input image on TheSpace app.
+  - dryrun        Ouput the final painting in the canvas.
   - preview       Ouput a series of png files to show how robot paint the target painting step by step.
   - preprocess    Convert image to valid 16-color png file for TheSpace app.
 `

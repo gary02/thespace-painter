@@ -326,7 +326,7 @@ const dryrun = async (path: string, offset: Coordinate) => {
               1,
               1,
               offset[0] + column,
-              offset[1] + row
+              offset[1] + row - 1
             );
           }
         }

@@ -141,7 +141,7 @@ const cli = () => {
       getOffsetOrPrintHelp(CLI_USAGE_PAINT),
       getIntervalOrPrintHelp(CLI_USAGE_PAINT),
       getLabelPointsOrPrintHelp(CLI_USAGE_PAINT)
-    );
+    ).catch((error) => {console.error(error)});
   } else if (command === "preview") {
     preview(
       getImagePathOrPrintHelp(CLI_USAGE),

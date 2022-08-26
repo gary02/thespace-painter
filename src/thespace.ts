@@ -154,18 +154,13 @@ export const fetchCanvasPng = async (snapperAddr: string, rpcUrl: string) => {
 const wei2ether = (bn: ethers.BigNumber): number => Number(ethers.utils.formatEther(bn));
 
 const _fetchSnapshotPng = async (snapper: Contract): Promise<PNG> => {
-  let cdn;
-  if (snapper.address === '0xc92c2944fe36ee4ddf7d160338ce2ef8c342c4ed') {
-    cdn = 'd1gykh5008m3d7.cloudfront.net';
-  } else {
-    cdn = 'd3ogaonsclhjen.cloudfront.net';
-  }
+  const ipfs = 'cloudflare-ipfs.com/ipfs';
   const regionId = 0;
   const [_fromBlock, snapshotCid] = await snapper[
     "latestSnapshotInfo(uint256)"
   ](regionId);
   const fromBlock = _fromBlock.toNumber();
-  const response = await axios(`https://${cdn}/${snapshotCid}`, { responseType: 'arraybuffer' });
+  const response = await axios(`https://${ipfs}/${snapshotCid}`, { responseType: 'arraybuffer' });
   return PNG.sync.read(Buffer.from(response.data, 'binary'));
 }
 

@@ -17,8 +17,9 @@ export class TheSpace {
   snapper: Contract;
   registry: Contract | null;
   canvas: Painting | null;
+  cdnDomain: string;
 
-  constructor(privateKey: string, rpcUrl: string, thespaceAddr: string, snapperAddr:string) {
+  constructor(privateKey: string, rpcUrl: string, thespaceAddr: string, snapperAddr:string, cdnDomain: string) {
     const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
     this.signer = new ethers.Wallet(privateKey, provider)
 
@@ -35,6 +36,7 @@ export class TheSpace {
     ); 
     this.registry = null;
     this.canvas = null;
+    this.cdnDomain = cdnDomain;
   }
 
   async init() {
@@ -74,7 +76,7 @@ export class TheSpace {
       await tx.wait();
     }
 
-    this.canvas = await _fetchCanvas(this.snapper, this.registry);
+    this.canvas = await _fetchCanvas(this.snapper, this.registry, this.cdnDomain);
     this.registry.on(
       'Color',
       (tokenId, color, owner) => {
@@ -137,14 +139,14 @@ export class TheSpace {
 //  const getColorCodeFromContract = async(pixelId: number): Promise<number> => {
 //    return (await thespace.getColor(pixelId)).toNumber();
 //  }
-export const fetchCanvasPng = async (snapperAddr: string, rpcUrl: string) => {
+export const fetchCanvasPng = async (snapperAddr: string, rpcUrl: string, cdnDomain: string) => {
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
   let snapper = new ethers.Contract(
     snapperAddr,
     snapperABI,
     provider
   );
-  return await _fetchSnapshotPng(snapper);
+  return await _fetchSnapshotPng(snapper, cdnDomain);
 }
 
 
@@ -153,19 +155,18 @@ export const fetchCanvasPng = async (snapperAddr: string, rpcUrl: string) => {
 //
 const wei2ether = (bn: ethers.BigNumber): number => Number(ethers.utils.formatEther(bn));
 
-const _fetchSnapshotPng = async (snapper: Contract): Promise<PNG> => {
-  const ipfs = 'cloudflare-ipfs.com/ipfs';
+const _fetchSnapshotPng = async (snapper: Contract, cdnDomain: string): Promise<PNG> => {
   const regionId = 0;
   const [_fromBlock, snapshotCid] = await snapper[
     "latestSnapshotInfo(uint256)"
   ](regionId);
   const fromBlock = _fromBlock.toNumber();
-  const response = await axios(`https://${ipfs}/${snapshotCid}`, { responseType: 'arraybuffer' });
+  const response = await axios(`https://${cdnDomain}/${snapshotCid}`, { responseType: 'arraybuffer' });
   return PNG.sync.read(Buffer.from(response.data, 'binary'));
 }
 
-const _fetchCanvas = async (snapper: Contract, registry: Contract): Promise<Painting> => {
-  const snapshot = await _fetchSnapshotPng(snapper);
+const _fetchCanvas = async (snapper: Contract, registry: Contract, cdnDomain: string): Promise<Painting> => {
+  const snapshot = await _fetchSnapshotPng(snapper, cdnDomain);
   const canvas = fetchPainting(snapshot);
   const regionId = 0;
   const [_fromBlock, snapshotCid] = await snapper[

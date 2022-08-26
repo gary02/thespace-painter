@@ -169,6 +169,7 @@ const paint = async (
   const snapperAddr = process.env.SNAPPER_ADDRESS;
   const privateKey = process.env.PRIVATE_KEY;
   const rpcUrl = process.env.PROVIDER_RPC_HTTP_URL;
+  const cdnDomain = process.env.SNAPSHOT_CDN_DOMAIN;
   const _maxPrice = process.env.MAX_PRICE;
   const _maxGasPrice = process.env.MAX_GAS_PRICE;
   let maxPrice = _maxPrice !== undefined ? parseInt(_maxPrice) : undefined;
@@ -185,6 +186,10 @@ const paint = async (
   }
   if (privateKey === undefined) {
     console.error("error: please set PRIVATE_KEY env");
+    process.exit(1);
+  }
+  if (cdnDomain === undefined) {
+    console.error("error: please set SNAPSHOT_CDN_DOMAIN env");
     process.exit(1);
   }
   if (rpcUrl === undefined) {
@@ -225,7 +230,7 @@ const paint = async (
     }
   }
 
-  const thespace = new TheSpace(privateKey, rpcUrl, thespaceAddr, snapperAddr);
+  const thespace = new TheSpace(privateKey, rpcUrl, thespaceAddr, snapperAddr, cdnDomain);
   console.time("init thespace");
   await thespace.init();
   console.timeEnd("init thespace");
@@ -295,6 +300,7 @@ const preview = (path: string, mode: string, labelPoints: Coordinate[]) => {
 const dryrun = async (path: string, offset: Coordinate) => {
   const snapperAddr = process.env.SNAPPER_ADDRESS;
   const rpcUrl = process.env.PROVIDER_RPC_HTTP_URL;
+  const cdnDomain = process.env.SNAPSHOT_CDN_DOMAIN;
   if (snapperAddr === undefined) {
     console.error("error: please set SNAPPER_ADDRESS env");
     process.exit(1);
@@ -303,10 +309,14 @@ const dryrun = async (path: string, offset: Coordinate) => {
     console.error("error: please set PROVIDER_RPC_HTTP_URL env");
     process.exit(1);
   }
+  if (cdnDomain === undefined) {
+    console.error("error: please set SNAPSHOT_CDN_DOMAIN env");
+    process.exit(1);
+  }
 
   const outFilePath = BASE_OUT_DIR + hash(path) + "-dryrun.png";
 
-  const canvasPng = await fetchCanvasPng(snapperAddr, rpcUrl);
+  const canvasPng = await fetchCanvasPng(snapperAddr, rpcUrl, cdnDomain);
 
   if (!fs.existsSync(BASE_OUT_DIR)) {
     fs.mkdirSync(BASE_OUT_DIR);

@@ -117,8 +117,10 @@ export const paint = async (
     console.log("--------Check End!------\n");
   };
   
-  for (const [i, step] of steps.entries()) {
-    await checkPrevPiexl(i);
-    await transaction(i, step);
+  while (1) {
+    for (const [i, step] of steps.entries()) {
+      await checkPrevPiexl(i);
+      await transaction(i, step);
+    }
   }
 };

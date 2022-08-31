@@ -17,6 +17,8 @@ export interface Painting {
   width: number;
 }
 
+export const ALPHA = 100;
+
 export const fetchPainting = (png: PNG): Painting => {
   const height = png.height;
   const width = png.width;
@@ -73,7 +75,7 @@ export const stroll = (painting: Painting, labelPoints?: Coordinate[]): number[]
   if (labelPoints !== undefined) {
     labelIndexes = labelPoints.map((p) => coordinate2index(p, painting.width));
     for (const [i, o] of labelIndexes.entries()) {
-      if (o >= painting.colors.length || o < 0 || painting.alphas[o] === 0) {
+      if (o >= painting.colors.length || o < 0 || painting.alphas[o] <= ALPHA) {
         throw Error(`invalid labelPoint ${labelPoints[i]}`)
       }
     }
@@ -108,7 +110,7 @@ export const blackFirst = (painting: Painting): number[] => {
 
   const steps = [];
   for (const [idx, _] of grayscaleEntries) {
-    if (painting.alphas[idx] > 0) {
+    if (painting.alphas[idx] > ALPHA) {
       steps.push(idx);
     }
   }
@@ -119,7 +121,7 @@ export const blackFirst = (painting: Painting): number[] => {
 export const randomPick = (painting: Painting): number[] => {
   const steps = [];
   for (const [idx, a] of painting.alphas.entries()) {
-    if (a > 0) {
+    if (a > ALPHA) {
       steps.push(idx)
     }
   }
@@ -139,7 +141,7 @@ const getStartIndexLabeled = (labels: Index[], hits: Set<Index>): Index | null =
 
 const getStartIndex = (painting: Painting, hits: Set<Index>): Index | null => {
   for (const [idx, a] of painting.alphas.entries()) {
-    if (a > 0 && !hits.has(idx)) {
+    if (a > ALPHA && !hits.has(idx)) {
       return idx;
     }
   }
@@ -148,7 +150,7 @@ const getStartIndex = (painting: Painting, hits: Set<Index>): Index | null => {
 
 const getNextStartIndex = (last:Index, painting: Painting, hits: Set<Index>): Index | null => {
   for (const [idx, a] of painting.alphas.entries()) {
-    if (a > 0 && idx > last && !hits.has(idx)) {
+    if (a > ALPHA && idx > last && !hits.has(idx)) {
       return idx;
     }
   }
@@ -157,7 +159,7 @@ const getNextStartIndex = (last:Index, painting: Painting, hits: Set<Index>): In
 
 const getNearSameColorIndex = (start: Index, painting: Painting, hits: Set<Index>): Index | null => {
   const color = painting.colors[start];
-  const good = (idx: Index | null) => (idx !== null && !hits.has(idx) && painting.colors[idx] == color && painting.alphas[idx] > 0)
+  const good = (idx: Index | null) => (idx !== null && !hits.has(idx) && painting.colors[idx] == color && painting.alphas[idx] > ALPHA)
   let right: number | null = null;
   let lowerRight: number | null = null;
   let lower: number | null = null;

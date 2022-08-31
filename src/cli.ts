@@ -18,6 +18,7 @@ import {
   stroll,
   blackFirst,
   randomPick,
+  ALPHA
 } from "./painting";
 import { TheSpace, fetchCanvasPng } from "./thespace";
 import { paint as _paint } from "./painter";
@@ -152,7 +153,7 @@ const cli = () => {
     dryrun(
       getImagePathOrPrintHelp(CLI_USAGE),
       getOffsetOrPrintHelp(CLI_USAGE_PAINT)
-    );
+    ).catch((error) => {console.error(error)});
   } else {
     preprocess(getImagePathOrPrintHelp(CLI_USAGE));
   }
@@ -328,7 +329,7 @@ const dryrun = async (path: string, offset: Coordinate) => {
       for (let row = 0; row < this.height; row++) {
         for (let column = 0; column < this.width; column++) {
           const index = (row * this.width + column) * 4;
-          if (this.data[index + 3] !== 0) {
+          if (this.data[index + 3] > ALPHA) {
             this.bitblt(
               canvasPng,
               column,

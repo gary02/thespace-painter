@@ -17,7 +17,7 @@ export interface Painting {
   width: number;
 }
 
-export const ALPHA = 100;
+export const ALPHA = 200;
 
 export const fetchPainting = (png: PNG): Painting => {
   const height = png.height;

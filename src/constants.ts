@@ -7,7 +7,7 @@ export const COLORS = [
 export const MODES = ['blackFirst', 'randomPick', 'stroll']
 
 export const CLI_USAGE = `Usage:
-  node bot.js <SUBCOMMAND>
+  npx ts-node src/cli.ts <SUBCOMMAND>
 
 SUBCOMMANDS:
   - paint         Paint input image on TheSpace app.
@@ -17,7 +17,7 @@ SUBCOMMANDS:
 `
 
 export const CLI_USAGE_PAINT = `Usage:
-  node bot.js src/cli.ts paint <PNG PATH> [OPTIONS]
+  npx ts-node src/cli.ts paint <PNG PATH> [OPTIONS]
 
 OPTIONS:
             --offset=<x,y>                  TheSpace canvas coordinate (1-base) to start paint the image, default 1,1

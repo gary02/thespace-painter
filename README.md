@@ -15,7 +15,7 @@ feh: a image viewer use to view output from `preview` subcommand.
 
 ```
 Usage:
-  node bot.js <SUBCOMMAND>
+  npx ts-node src/cli.ts <SUBCOMMAND>
 
 SUBCOMMANDS:
   - paint         Paint input image on TheSpace app.
@@ -26,6 +26,28 @@ SUBCOMMANDS:
 ```
 
 ### paint
+
+```
+Usage:
+  npx ts-node src/cli.ts paint <PNG PATH> [OPTIONS]
+
+OPTIONS:
+            --offset=<x,y>                  TheSpace canvas coordinate (1-base) to start paint the image, default 1,1
+            --mode=<mode name>              The way to paint the image, valid mode: stroll (default), randomPick, blackFirst
+  -p=<x,y>, --stroll-label-point=<x,y>      When in stroll mode, specify a series of pixel coordinates (1-base) to help paint process
+            --interval=<seconds>            the interval between paint, default 1 second
+
+ENVIRONMENT VALUES:
+  THESPACE_ADDRESS                          TheSpace contract address to paint
+  SNAPPER_ADDRESS                           TheSpace related Snapper contract address, used to fetch canvas
+  PRIVATE_KEY                               Wallet private key
+  PROVIDER_RPC_HTTP_URL                     RPC network endpoint
+  MAX_PRICE                                 Max accepted pixel price in $Space
+  MAX_GAS_PRICE                             Max accpeted gas price in wei
+
+```
+
+#### Example
 
 Start paint in thespace app:
 
